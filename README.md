@@ -108,29 +108,11 @@ Everything else is an add-on, built only after these five work.
 
 ---
 
-## Tech stack (proposed)
+## Tech stack
 
-The pitch fixes: mobile-first web app, OpenStreetMap map, OpenRouteService walking and wheelchair routes, one catalogue file per city, rule-based planner, no accounts. The choices below fill in the rest.
+React + TypeScript + Vite mobile web app, Leaflet on OpenStreetMap, OpenRouteService walking and wheelchair routes through a small serverless proxy, one JSON catalogue per city, profile in `localStorage`. The planner runs on the phone with no AI model.
 
-| Layer | Choice | Why |
-|---|---|---|
-| App | **React + TypeScript + Vite**, Tailwind CSS | Runs in any phone browser; fast to build; one language across planner, app and data scripts |
-| Map | **Leaflet** (`react-leaflet`) with OSM raster tiles | Simplest OSM map; plenty for 30–50 markers and a few route lines |
-| Routing | **OpenRouteService** `foot-walking` and `wheelchair` profiles | `avoid_features: steps` covers stair avoidance; the `green` and `quiet` route weightings (0–1) map directly onto the fastest ↔ scenic slider |
-| API key proxy | One **serverless function** (Vercel or Netlify) | Keeps the ORS key out of the browser and caches route responses |
-| Catalogue | **JSON file per city** in `data/`, validated with **Zod** | Planner runs offline from the file; the schema is the contract for "any city" |
-| Catalogue build | Node script: **Overpass API** (OSM places, `opening_hours`, `wheelchair`, steps) + hand-entered hourly crowd curves + **ORS matrix** of walking times between all places | Walking times are precomputed once per city, so planning makes no network calls |
-| Opening hours | [`opening_hours`](https://github.com/opening-hours/opening_hours.js) library | Parses OSM's hours syntax correctly |
-| Taste profile | `localStorage` | Satisfies "profile stays on the phone"; no backend database at all |
-| Planner | Pure TypeScript: score places by taste, then greedy insertion with time windows (opening hours, quiet slots), walking-distance cap and rest stops | Deterministic and explainable ("clear rules you can check") |
-| Tests | **Vitest** for scoring and planner | The planner is the core logic and the easiest part to test |
-| Hosting | Vercel or Netlify free tier | Static app plus the proxy function in one deploy |
-
-### Open questions
-
-- **Crowd data source.** "Public busy-time info" must be properly licensed (hackathon rule). Scraping Google Popular Times breaks Google's terms. Safer: our own hourly counts at a few sights, plus estimates from public sources we can cite, entered by hand.
-- **Map tiles.** The public OSM tile server is fine for a demo with attribution. For anything beyond that, switch to a free tile provider.
-- **ORS free tier** limits daily requests. Caching in the proxy and precomputing the matrix keep the demo well inside it.
+Full design, data model, planner rules and open questions: [TECH.md](TECH.md).
 
 ---
 
