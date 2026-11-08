@@ -16,9 +16,8 @@ Tour Wiz is a mobile web app that plans a visitor's day around their tastes, eac
 
 If the code and TECH.md disagree, tell the user. Do not silently pick one.
 
-## Hackathon rules that bind agents
+## Hackathon rules
 
-- **AI may write code for the tool.** It may not create the solution, design or business case. Implement what README.md and TECH.md specify. Do not invent features, change product behaviour, or write pitch, business or research content. If a product decision is missing, ask the user.
 - **The scope was fixed on 8 Nov and cannot change.** Build the five core parts first. Add-ons come only after all five work, and only in the order the README lists them.
 - **Never build anything on the out-of-scope list**: bookings, payments, accounts or login, live crowd sensors, an AI chat assistant, public transport routing, offline maps, city-wide visit scheduling.
 - **Everything must be properly licensed.** Add only dependencies, data, fonts, icons and images with a licence that permits use, and note the source. Never scrape Google Maps or Popular Times. Keep OpenStreetMap attribution visible on the map.
