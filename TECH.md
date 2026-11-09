@@ -53,7 +53,7 @@ Planning runs entirely on the phone from the catalogue file. The only network ca
 
 ```
 src/
-  catalogue/   Zod schema, loader
+  catalogue/   Zod schema, shared tag vocabulary, loader
   profile/     taste profile, onboarding, rating updates
   planner/     scoring and day planning (pure, no React)
   map/         Leaflet map, route slider, leg fetching
@@ -61,10 +61,12 @@ src/
 api/
   route.ts     ORS proxy
 scripts/
-  build-catalogue.ts
+  build-catalogue.ts   npm run catalogue
+  catalogue-lib.ts     pure merge helpers, unit-tested
 data/
-  cities/prague.json
-  crowd/prague.csv   hand-entered hourly crowd levels, with sources
+  places/prague.json   hand-picked places: OSM id, tags, visit time, overrides with a note
+  crowd/prague.csv     hand-entered hourly crowd levels, with sources
+  cities/prague.json   generated catalogue the app loads
 docs/                hackathon brief, pitch, interview sheet
 ```
 
@@ -76,8 +78,10 @@ One file per city, produced by `scripts/build-catalogue.ts` and committed to the
 type City = {
   id: string;                  // "prague"
   name: string;
+  countryCode: string;         // "cz", for public-holiday rules in opening_hours
   timezone: string;            // "Europe/Prague"
   center: [lat: number, lon: number];
+  walkSource: "openrouteservice" | "estimate";
   places: Place[];
   restPoints: RestPoint[];     // benches, cafés, public toilets
   walk: { ids: string[]; seconds: number[][] };           // foot-walking
@@ -102,14 +106,15 @@ type Level = 0 | 1 | 2 | 3 | 4; // empty … packed
 type RestPoint = { location: [number, number]; kind: "bench" | "cafe" | "toilets" };
 ```
 
-**The tag vocabulary is fixed and shared across all cities** (for example `castle`, `church`, `museum`, `art`, `viewpoint`, `park`, `tea-house`, `food-market`, `nightlife`, `kids`). That is what lets a profile built in Prague work in Barcelona. A tag that exists in only one city does not carry over to the next.
+**The tag vocabulary is fixed and shared across all cities**; it lives in `src/catalogue/tags.ts` (`castle`, `church`, `museum`, `art`, `history`, `architecture`, `viewpoint`, `park`, `river`, `tea-house`, `cafe`, `beer`, `food-market`, `nightlife`, `music`, `kids`, `shopping`). That is what lets a profile built in Prague work in Barcelona. A tag that exists in only one city does not carry over to the next.
 
 Build steps:
-1. Overpass query for the chosen places by OSM id. Read `name`, `opening_hours`, `wheelchair`, location.
-2. Merge with `data/crowd/prague.csv` (hourly levels and their source) and hand-assigned tags and visit times.
-3. Fetch rest points near the places from Overpass (`amenity=bench|cafe|toilets`).
-4. Call the ORS matrix endpoint twice (walking and wheelchair). 50 × 50 = 2,500 pairs, within one request's limit.
-5. Validate with the Zod schema and write the JSON file.
+1. Read the seed list `data/places/prague.json`: OSM id, tags, visit time, and optional `openingHours` / `stepFree` overrides, each with a note saying why.
+2. Overpass query for those places by OSM id. Read `opening_hours`, `wheelchair` and location. Seed overrides win. A place with no hours anywhere fails the build; a place with no `wheelchair` tag is treated as `"no"`.
+3. Merge with `data/crowd/prague.csv` (hourly levels and their source). A place with no rows gets a generic curve whose `crowdSource` starts with `PLACEHOLDER`, so unmeasured data is always visible.
+4. Fetch rest points within 150 m of the places from Overpass (`amenity=bench|cafe|toilets`), keeping the two nearest of each kind per place.
+5. Call the ORS matrix endpoint twice (walking and wheelchair). 50 × 50 = 2,500 pairs, within one request's limit. Any unreachable pair fails the build. Without an ORS key, `--estimate-walk` fills both matrices with straight-line estimates and sets `walkSource: "estimate"`; the demo build must use `"openrouteservice"`.
+6. Validate with the Zod schema (including every `opening_hours` string) and write the JSON file.
 
 ## 2 · Taste profile
 

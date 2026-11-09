@@ -56,14 +56,15 @@ These come from the pitch and GDPR. They are not optional.
 
 ## Commands
 
-The project is not scaffolded yet. Once it is, keep this list accurate:
+Keep this list accurate:
 
 ```bash
 npm install
 npm run dev          # local dev server
 npm test             # Vitest
 npm run build        # production build
-npm run catalogue    # rebuild data/cities/*.json from Overpass + ORS
+npm run catalogue    # rebuild data/cities/prague.json from Overpass + ORS (ORS_API_KEY in .env)
+npm run catalogue -- --estimate-walk   # same, with straight-line walking times and no key
 ```
 
 ## Before you finish a change
