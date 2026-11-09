@@ -75,8 +75,24 @@ npm run catalogue -- --estimate-walk   # same, with straight-line walking times 
 4. UI changes have been checked at phone width.
 5. README.md and TECH.md still describe what the code does.
 
-## Git
+## Pull requests
 
-- Work on a branch, never directly on `main`. Open a PR with a short description of what changed and why.
-- Never force-push or rewrite history on a branch that has a PR. Review fixes go on as new commits.
-- Never commit secrets, `.env`, `node_modules/` or build output.
+`main` changes only through a reviewed PR. Follow this flow for every change, however small:
+
+1. Branch off an up-to-date `main`: `git switch -c <type>/<short-name>`, where type is `feat`, `fix`, `chore` or `docs`.
+2. Push the branch and open the PR right away, as a draft if the work is not finished: `gh pr create --draft`. Never push to `main`.
+3. The PR description says what changed, why, and how you checked it.
+4. Another team member approves the PR. Then squash-merge it.
+5. Review fixes go on as new commits. Never force-push or rewrite history on a branch that has a PR.
+6. Never commit secrets, `.env`, `node_modules/` or build output.
+
+### Agents never bypass
+
+A person may skip a requirement when they have to. An agent may not, even when it has the access:
+
+- Never push to `main`, force-push, or skip hooks with `--no-verify`.
+- Never approve a PR. Never merge a PR that is not approved, and never merge with `--admin`.
+- Never change branch protection, rulesets or repository visibility.
+- If a rule blocks you, stop and ask the person to do the step themselves.
+
+For Claude Code, [.claude/hooks/guard-review-flow.mjs](.claude/hooks/guard-review-flow.mjs) blocks these commands. Other agents must follow this section as written.
