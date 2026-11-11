@@ -1,6 +1,6 @@
 import { z } from "zod";
 import OpeningHours from "opening_hours";
-import { TAGS } from "./tags";
+import { TAGS } from "./tags.ts";
 
 const latLon = z.tuple([
   z.number().min(-90).max(90),

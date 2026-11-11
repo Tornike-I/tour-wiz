@@ -5,11 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "typecheck": "tsc -b",
-    "catalogue": "tsx scripts/build-catalogue.ts"
+    "typecheck": "tsc",
+    "catalogue": "node scripts/build-catalogue.ts"
   },
   "dependencies": {
     "opening_hours": "^3.15.0",
@@ -22,9 +22,11 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.3.0",
-    "tsx": "^4.23.15",
     "typescript": "^7.0.2",
     "vite": "^8.3.7",
     "vitest": "^4.1.12"
+  },
+  "engines": {
+    "node": ">=22.18"
   }
 }

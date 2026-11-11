@@ -1,8 +1,8 @@
-import { citySchema, type City } from "./schema";
+import { citySchema, type City } from "./schema.ts";
 
-export { citySchema, placeSchema, restPointSchema } from "./schema";
-export type { City, Place, RestPoint, Level } from "./schema";
-export { TAGS, type Tag } from "./tags";
+export { citySchema, placeSchema, restPointSchema } from "./schema.ts";
+export type { City, Place, RestPoint, Level } from "./schema.ts";
+export { TAGS, type Tag } from "./tags.ts";
 
 export class CatalogueError extends Error {}
 

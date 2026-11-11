@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import prague from "../../data/cities/prague.json";
-import { CatalogueError, parseCity, walkTimes, type City } from ".";
+import { CatalogueError, parseCity, walkTimes, type City } from "./index.ts";
 
 const valid = (): City => structuredClone(prague) as City;
 

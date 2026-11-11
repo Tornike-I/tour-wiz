@@ -56,7 +56,7 @@ These come from the pitch and GDPR. They are not optional.
 
 ## Commands
 
-Keep this list accurate:
+Needs Node 22.18 or newer, which runs the TypeScript scripts directly. Keep this list accurate:
 
 ```bash
 npm install

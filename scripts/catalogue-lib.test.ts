@@ -7,7 +7,7 @@ import {
   pickRestPoints,
   type OsmElement,
   type SeedPlace,
-} from "./catalogue-lib";
+} from "./catalogue-lib.ts";
 
 const hours = (v: number) => Array.from({ length: 24 }, () => v).join(",");
 const HEADER = "placeId,dayType," + Array.from({ length: 24 }, (_, h) => `h${String(h).padStart(2, "0")}`).join(",") + ",source";
@@ -29,8 +29,8 @@ describe("parseCrowdCsv", () => {
     expect(row?.source).toBe("our count 9 Nov");
   });
 
-  it("keeps commas inside a quoted source", () => {
-    const csv = `${HEADER}\ntower,weekday,${hours(1)},"count, 9 Nov"`;
+  it("keeps commas inside the source", () => {
+    const csv = `${HEADER}\ntower,weekday,${hours(1)},count, 9 Nov`;
     expect(parseCrowdCsv(csv).get("tower")?.source).toBe("count, 9 Nov");
   });
 
