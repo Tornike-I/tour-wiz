@@ -150,7 +150,7 @@ Pure function in `src/planner`: `plan(city, profile, { date, start, end, from? }
    `value = taste − 0.6 · crowd/4 − 0.6 · walk minutes/30 − 0.25 · wait minutes/60`
 
    Crowd is the highest level during the whole visit, not only at arrival. Waiting is tried for 0, 30 and 60 minutes, and until opening time when the place is closed on arrival (up to 90 minutes). Skip candidates that are not open for the whole visit, end after the day ends, or break the walking cap. Add the best candidate and repeat until nothing fits.
-4. **Rest stops.** Part 5: when the walking time since the last stop or rest exceeds the profile limit, insert the nearest rest point.
+4. **Rest stops.** When a leg's walking time is longer than `restEveryMinutes`, a 10-minute rest goes on that leg. The rest point is picked by `detour + distance to where the limit runs out` (the point `restEveryMinutes / leg minutes` along the straight line, at most 80%). The rest and its detour count in the arrival time and the walking cap. Step-free travellers rest only at benches, because OSM rarely says whether a café or toilet has steps.
 5. **Explain.** Every stop carries its reasons: "Matches: tea-house, art", "Quiet at 09:30 (quiet, level 1 of 4)", "Waits 45 min for it to open", "Waits 30 min for a quieter slot", "Step-free access is limited".
 
 Walking times are matrix seconds × the pace factor. The walking cap uses distance ≈ matrix seconds × 1.3 m/s, because the catalogue stores times, not distances. The first leg, from `from` or the city centre, is a straight-line estimate.
@@ -175,9 +175,11 @@ Code: `src/map/` (`DayMap`, `RoutePanel`, `fetchRoute`), shown on the plan scree
 
 ## 5 · Basic accessibility
 
-- **Avoid stairs:** the `wheelchair` profile for routes and the `walkStepFree` matrix for planning; places filtered by `stepFree`.
-- **Cap walking distance:** `maxWalkKmPerDay` enforced by the planner.
-- **Rest stops:** inserted by the planner from `restPoints`.
+Onboarding asks three access questions: the step-free switch, "Rest breaks" (no need, after 10 or after 20 minutes of walking) and "Most walking in a day" (2, 4, 6, 10 or 14 km; until picked, it follows the pace: 6, 10 or 14 km).
+
+- **Avoid stairs:** the `wheelchair` profile for routes and the `walkStepFree` matrix for planning; places whose `stepFree` is `"no"` are left out, and that includes places with no `wheelchair` tag in OSM. The plan screen says so. `"limited"` places stay, with the reason "Step-free access is limited".
+- **Cap walking distance:** `maxWalkKmPerDay` enforced by the planner, including rest detours.
+- **Rest stops:** inserted by the planner from `restPoints` (see step 4 of the planner). The stop card says "N min walk, with a 10 min rest on the way", and the map shows a "Rest" dot on the selected leg. Rest points' opening hours are not known, so a café or toilet may be closed.
 
 "Step-free routes must be very accurate" (SWOT): OSM step and kerb data is uneven. In the demo, label step-free routes as "based on OpenStreetMap data" and check the demo routes on foot.
 

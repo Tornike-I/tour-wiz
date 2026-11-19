@@ -6,7 +6,7 @@ import type { LatLon } from "./routeTypes";
 
 type Props = {
   start: LatLon;
-  stops: { name: string; location: LatLon }[];
+  stops: { name: string; location: LatLon; rest?: LatLon }[];
   selected: number;
   onSelect: (index: number) => void;
   path?: LatLon[]; // the selected leg's route; a straight dashed line is drawn when missing
@@ -63,13 +63,20 @@ export function DayMap({ start, stops, selected, onSelect, path }: Props) {
         .addTo(group);
     });
 
+    const rest = stops[selected]?.rest;
+    if (rest) {
+      L.circleMarker(rest, { radius: 8, color: "#fff", weight: 2, fillColor: "#b45309", fillOpacity: 1, interactive: false })
+        .bindTooltip("Rest", { permanent: true, direction: "left", offset: [-8, 0] })
+        .addTo(group);
+    }
+
     if (legFrom && legTo) {
       if (path?.length) {
         L.polyline(path, { color: "#0f766e", weight: 6, opacity: 0.85 }).addTo(group);
       } else {
         L.polyline([legFrom, legTo], { color: "#0f766e", weight: 4, dashArray: "8 8" }).addTo(group);
       }
-      m.fitBounds(L.latLngBounds([legFrom, legTo, ...(path ?? [])]), { padding: [40, 40], maxZoom: 17 });
+      m.fitBounds(L.latLngBounds([legFrom, legTo, ...(rest ? [rest] : []), ...(path ?? [])]), { padding: [40, 40], maxZoom: 17 });
     } else if (stops.length) {
       m.fitBounds(L.latLngBounds(stops.map((s) => s.location)), { padding: [40, 40] });
     }

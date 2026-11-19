@@ -124,3 +124,18 @@ test("disables the scenic slider for step-free routes", async ({ page }) => {
   await expect(page.getByRole("slider")).toBeDisabled();
   await expect.poll(() => routeCalls.at(-1)).toMatchObject({ scenic: 0, stepFree: true });
 });
+
+test("adds rest breaks and keeps to the walking limit", async ({ page }) => {
+  await page.getByRole("button", { name: "After 10 min walking" }).click();
+  await page.getByRole("button", { name: "4 km", exact: true }).click();
+  await onboard(page, ["Castles", "Art", "Viewpoints", "History"]);
+
+  await expect(page.getByText(/Rest on the way at (a bench|a café|public toilets) \(10 min\)/).first()).toBeVisible();
+  const summary = await page.getByText(/\d+ stops · [\d.]+ km walking/).innerText();
+  expect(Number(summary.match(/([\d.]+) km/)![1])).toBeLessThanOrEqual(4);
+  await expectPhoneFriendly(page);
+
+  await page.getByRole("button", { name: "Change my interests" }).click();
+  await expect(page.getByRole("button", { name: "After 10 min walking" })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("button", { name: "4 km", exact: true })).toHaveAttribute("aria-pressed", "true");
+});

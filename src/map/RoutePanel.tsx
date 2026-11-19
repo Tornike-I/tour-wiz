@@ -9,7 +9,7 @@ const navButton =
 
 type Props = {
   start: LatLon;
-  stops: { name: string; location: LatLon; walkMinutes: number }[];
+  stops: { name: string; location: LatLon; walkMinutes: number; rest?: LatLon }[];
   selected: number;
   onSelect: (index: number) => void;
   stepFree: boolean;

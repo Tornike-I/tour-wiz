@@ -22,9 +22,9 @@ export const TAG_LABELS: Record<Tag, string> = {
 };
 
 export const PACE_LABELS: Record<Pace, { name: string; hint: string }> = {
-  relaxed: { name: "Relaxed", hint: "Slow walks, up to 6 km a day" },
-  normal: { name: "Normal", hint: "Up to 10 km a day" },
-  brisk: { name: "Brisk", hint: "Fast walks, up to 14 km a day" },
+  relaxed: { name: "Relaxed", hint: "Slower walks, more time between stops" },
+  normal: { name: "Normal", hint: "Average walking speed" },
+  brisk: { name: "Brisk", hint: "Fast walks, more stops in a day" },
 };
 
 export const CROWD_LABELS = ["Empty", "Quiet", "Moderate", "Busy", "Packed"] as const;

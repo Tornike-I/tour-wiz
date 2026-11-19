@@ -8,6 +8,13 @@ const toggleClass = (on: boolean) =>
     on ? "border-brand bg-brand text-white" : "border-stone-300 bg-white text-stone-800"
   }`;
 
+const REST_OPTIONS = [
+  { minutes: undefined, label: "No need" },
+  { minutes: 10, label: "After 10 min walking" },
+  { minutes: 20, label: "After 20 min walking" },
+];
+const WALK_KM_OPTIONS = [2, 4, 6, 10, 14];
+
 type Props = {
   initial?: Profile;
   onDone: (answers: OnboardingAnswers) => void;
@@ -20,6 +27,12 @@ export function Onboarding({ initial, onDone, onCancel }: Props) {
   );
   const [pace, setPace] = useState<Pace>(initial?.pace ?? "normal");
   const [stepFree, setStepFree] = useState(initial?.stepFree ?? false);
+  const [restEvery, setRestEvery] = useState<number | undefined>(initial?.restEveryMinutes);
+  // Undefined follows the pace's default until the traveller picks a limit.
+  const [walkKm, setWalkKm] = useState<number | undefined>(
+    initial && initial.maxWalkKmPerDay !== PACES[initial.pace].maxWalkKmPerDay ? initial.maxWalkKmPerDay : undefined,
+  );
+  const shownKm = walkKm ?? PACES[pace].maxWalkKmPerDay;
   const [showError, setShowError] = useState(false);
 
   const toggle = (tag: Tag) => {
@@ -38,7 +51,13 @@ export function Onboarding({ initial, onDone, onCancel }: Props) {
       setShowError(true);
       return;
     }
-    onDone({ interests: TAGS.filter((t) => interests.has(t)), pace, stepFree });
+    onDone({
+      interests: TAGS.filter((t) => interests.has(t)),
+      pace,
+      stepFree,
+      ...(walkKm ? { maxWalkKmPerDay: walkKm } : {}),
+      ...(restEvery ? { restEveryMinutes: restEvery } : {}),
+    });
   };
 
   return (
@@ -103,6 +122,36 @@ export function Onboarding({ initial, onDone, onCancel }: Props) {
         >
           {stepFree ? "✓ " : ""}I need step-free routes (no stairs)
         </button>
+
+        <p id="rest-label" className="mt-5 mb-2 font-medium">Rest breaks</p>
+        <div role="group" aria-labelledby="rest-label" className="flex flex-wrap gap-2">
+          {REST_OPTIONS.map(({ minutes, label }) => (
+            <button
+              key={label}
+              type="button"
+              aria-pressed={restEvery === minutes}
+              onClick={() => setRestEvery(minutes)}
+              className={toggleClass(restEvery === minutes)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        <p id="walk-label" className="mt-5 mb-2 font-medium">Most walking in a day</p>
+        <div role="group" aria-labelledby="walk-label" className="flex flex-wrap gap-2">
+          {WALK_KM_OPTIONS.map((km) => (
+            <button
+              key={km}
+              type="button"
+              aria-pressed={shownKm === km}
+              onClick={() => setWalkKm(km)}
+              className={toggleClass(shownKm === km)}
+            >
+              {km} km
+            </button>
+          ))}
+        </div>
       </fieldset>
 
       <div className="space-y-3">

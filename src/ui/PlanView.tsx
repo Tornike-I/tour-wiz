@@ -33,7 +33,13 @@ export function PlanView({ city, profile, today, onRate, onEdit, onDelete }: Pro
   );
   const places = useMemo(() => new Map(city.places.map((p) => [p.id, p])), [city]);
   const mapStops = useMemo(
-    () => (day?.stops ?? []).map((s) => ({ name: s.name, location: places.get(s.placeId)!.location, walkMinutes: s.walkMinutes })),
+    () =>
+      (day?.stops ?? []).map((s) => ({
+        name: s.name,
+        location: places.get(s.placeId)!.location,
+        walkMinutes: s.walkMinutes,
+        rest: s.rest?.location,
+      })),
     [day, places],
   );
   const leg = Math.min(selected, Math.max(mapStops.length - 1, 0));
@@ -63,6 +69,12 @@ export function PlanView({ city, profile, today, onRate, onEdit, onDelete }: Pro
             <input type="time" className={inputClass} value={end} onChange={(e) => setEnd(e.target.value)} />
           </label>
         </div>
+        {planProfile.stepFree && (
+          <p className="rounded-lg bg-white p-3 text-sm text-stone-700 shadow-sm">
+            Step-free plan: places with steps, or with no access information in OpenStreetMap, are left out. Rests are on
+            benches.
+          </p>
+        )}
         {start >= end && <p role="alert" className="font-medium text-red-700">The day must end after it starts.</p>}
         {ratingsChanged && (
           <button
@@ -101,7 +113,9 @@ export function PlanView({ city, profile, today, onRate, onEdit, onDelete }: Pro
                 <li key={stop.placeId} className="space-y-2 rounded-xl bg-white p-4 shadow-sm">
                   {stop.walkMinutes > 0 && (
                     <p className="text-sm text-stone-600">
-                      {stop.walkMinutes} min walk{stop.waitMinutes > 0 ? `, then ${stop.waitMinutes} min free` : ""}
+                      {stop.walkMinutes} min walk
+                      {stop.rest ? `, with a ${stop.rest.minutes} min rest on the way` : ""}
+                      {stop.waitMinutes > 0 ? `, then ${stop.waitMinutes} min free` : ""}
                     </p>
                   )}
                   <div className="flex items-start justify-between gap-3">

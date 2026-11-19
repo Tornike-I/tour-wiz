@@ -1,5 +1,5 @@
 import OpeningHours from "opening_hours";
-import type { City, Level, Place } from "../catalogue";
+import type { City, Level, Place, RestPoint } from "../catalogue";
 import type { Tag } from "../catalogue/tags";
 import { walkTimeFactor, ratingKey, type Profile } from "../profile";
 
@@ -15,6 +15,8 @@ const WAIT_OPTIONS = [0, 30, 60]; // minutes
 const SLOT_MINUTES = 15;
 // Converts matrix seconds to distance for the walking cap; the catalogue stores times, not distances.
 const WALK_METRES_PER_SECOND = 1.3;
+export const REST_MINUTES = 10;
+const REST_LABELS: Record<RestPoint["kind"], string> = { bench: "a bench", cafe: "a café", toilets: "public toilets" };
 
 export type PlanRequest = {
   date: string; // "2026-11-21", the city's local date
@@ -31,6 +33,7 @@ export type Stop = {
   walkMinutes: number;
   waitMinutes: number;
   crowdLevel: Level;
+  rest?: { kind: RestPoint["kind"]; location: [lat: number, lon: number]; minutes: number }; // on the way here
   reasons: string[];
 };
 
@@ -59,6 +62,25 @@ export function plan(city: City, profile: Profile, request: PlanRequest): DayPla
       ? (metres(from, to.location) * 1.3) / WALK_METRES_PER_SECOND
       : (matrix.seconds[index.get(from.id)!]?.[index.get(to.id)!] ?? Infinity);
     return seconds * paceFactor;
+  };
+
+  // Benches only for step-free travellers: OSM rarely says whether a café or toilet has steps.
+  const restPoints = city.restPoints.filter((r) => !profile.stepFree || r.kind === "bench");
+
+  /** A leg longer than the traveller's rest limit gets a rest near where the limit runs out, with a small detour. */
+  const restFor = (from: Place | [number, number], to: Place, walkMinutes: number) => {
+    if (!profile.restEveryMinutes || walkMinutes <= profile.restEveryMinutes) return undefined;
+    const a = Array.isArray(from) ? from : from.location;
+    const direct = metres(a, to.location);
+    const share = Math.min(profile.restEveryMinutes / walkMinutes, 0.8);
+    const target: [number, number] = [a[0] + (to.location[0] - a[0]) * share, a[1] + (to.location[1] - a[1]) * share];
+    let best: { point: RestPoint; detour: number; score: number } | undefined;
+    for (const point of restPoints) {
+      const detour = metres(a, point.location) + metres(point.location, to.location) - direct;
+      const score = detour + metres(point.location, target);
+      if (!best || score < best.score) best = { point, detour, score };
+    }
+    return best && { point: best.point, detourSeconds: ((best.detour * 1.3) / WALK_METRES_PER_SECOND) * paceFactor };
   };
 
   const openThroughout = (place: Place, arrive: number, leave: number): boolean => {
@@ -93,15 +115,28 @@ export function plan(city: City, profile: Profile, request: PlanRequest): DayPla
 
   for (;;) {
     let best:
-      | { place: Place; value: number; arrive: number; wait: number; walk: number; crowd: Level; closedOnArrival: boolean }
+      | {
+          place: Place;
+          value: number;
+          arrive: number;
+          wait: number;
+          walk: number;
+          crowd: Level;
+          closedOnArrival: boolean;
+          rest?: RestPoint;
+          metres: number;
+        }
       | undefined;
     for (const place of remaining) {
-      const walkSeconds = legSeconds(position, place);
+      const directSeconds = legSeconds(position, place);
+      if (!Number.isFinite(directSeconds)) continue;
+      const rest = restFor(position, place, Math.ceil(directSeconds / 60));
+      const walkSeconds = directSeconds + (rest?.detourSeconds ?? 0);
       const walkMinutes = Math.ceil(walkSeconds / 60);
       const legMetres = (walkSeconds / paceFactor) * WALK_METRES_PER_SECOND;
-      if (!Number.isFinite(walkSeconds) || walkedMetres + legMetres > capMetres) continue;
+      if (walkedMetres + legMetres > capMetres) continue;
       const taste = tasteOf(place, profile, seenTags) / maxTaste;
-      const firstSlot = roundUp(now + walkMinutes);
+      const firstSlot = roundUp(now + walkMinutes + (rest ? REST_MINUTES : 0));
       const closedOnArrival = !hours.get(place.id)!.getState(at(firstSlot));
       const waits = [...WAIT_OPTIONS];
       if (closedOnArrival) {
@@ -118,12 +153,14 @@ export function plan(city: City, profile: Profile, request: PlanRequest): DayPla
           (WEIGHTS.crowd * crowd) / 4 -
           (WEIGHTS.walk * walkMinutes) / 30 -
           (WEIGHTS.wait * wait) / 60;
-        if (!best || value > best.value) best = { place, value, arrive, wait, walk: walkMinutes, crowd, closedOnArrival };
+        if (!best || value > best.value) {
+          best = { place, value, arrive, wait, walk: walkMinutes, crowd, closedOnArrival, rest: rest?.point, metres: legMetres };
+        }
       }
     }
     if (!best) break;
 
-    const { place, arrive, wait, walk, crowd, closedOnArrival } = best;
+    const { place, arrive, wait, walk, crowd, closedOnArrival, rest } = best;
     const leave = arrive + place.visitMinutes;
     stops.push({
       placeId: place.id,
@@ -133,10 +170,14 @@ export function plan(city: City, profile: Profile, request: PlanRequest): DayPla
       walkMinutes: walk,
       waitMinutes: wait,
       crowdLevel: crowd,
-      reasons: reasonsFor(place, profile, crowd, arrive, wait, closedOnArrival),
+      ...(rest ? { rest: { kind: rest.kind, location: rest.location, minutes: REST_MINUTES } } : {}),
+      reasons: [
+        ...reasonsFor(place, profile, crowd, arrive, wait, closedOnArrival),
+        ...(rest ? [`Rest on the way at ${REST_LABELS[rest.kind]} (${REST_MINUTES} min)`] : []),
+      ],
     });
     for (const tag of place.tags) seenTags.set(tag, (seenTags.get(tag) ?? 0) + 1);
-    walkedMetres += (legSeconds(position, place) / paceFactor) * WALK_METRES_PER_SECOND;
+    walkedMetres += best.metres;
     remaining.delete(place);
     position = place;
     now = leave;
