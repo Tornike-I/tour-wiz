@@ -60,8 +60,11 @@ Keep this list accurate:
 
 ```bash
 npm install
+npx playwright install chromium webkit   # once, for npm run e2e
 npm run dev          # local dev server
+npm run typecheck    # tsc
 npm test             # Vitest
+npm run e2e          # Playwright, Android and iPhone profiles, against the production build
 npm run build        # production build
 npm run catalogue    # rebuild data/cities/prague.json from Overpass + ORS (ORS_API_KEY in .env)
 npm run catalogue -- --estimate-walk   # same, with straight-line walking times and no key
@@ -69,10 +72,10 @@ npm run catalogue -- --estimate-walk   # same, with straight-line walking times 
 
 ## Before you finish a change
 
-1. `npm test` and `npm run build` pass.
+1. `npm run typecheck`, `npm test`, `npm run e2e` and `npm run build` pass. CI runs the same on the PR.
 2. Planner or scoring changes come with Vitest tests covering the rule they touch.
 3. Catalogue changes pass schema validation.
-4. UI changes have been checked at phone width.
+4. UI changes come with a Playwright test and have been opened on the PR's preview URL on a real phone.
 5. README.md and TECH.md still describe what the code does.
 
 ## Pull requests

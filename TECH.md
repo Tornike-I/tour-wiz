@@ -46,8 +46,8 @@ Planning runs entirely on the phone from the catalogue file. The only network ca
 | Catalogue | One JSON file per city, validated with Zod | The schema is the contract that makes "any city" true |
 | Opening hours | [`opening_hours`](https://github.com/opening-hours/opening_hours.js) | Parses OSM's `opening_hours` syntax |
 | Profile storage | `localStorage` | Stays on the phone; no database |
-| Tests | Vitest | Scoring and planner are pure functions |
-| Hosting | Vercel or Netlify free tier | Static app and proxy in one deploy |
+| Tests | Vitest; Playwright with Pixel 7 (Chromium) and iPhone 14 (WebKit) profiles | Scoring and planner are pure functions; WebKit is Safari's engine |
+| Hosting | Vercel free tier, a preview deploy per PR | Static app and proxy in one deploy; HTTPS previews let us open every PR on a real phone |
 
 ## Repository layout
 
@@ -58,6 +58,7 @@ src/
   planner/     scoring and day planning (pure, no React)
   map/         Leaflet map, route slider, leg fetching
   ui/          screens and components
+e2e/           Playwright tests, run in the Android and iPhone profiles
 api/
   route.ts     ORS proxy
 scripts/
@@ -199,8 +200,10 @@ Access needs count as health-related data under GDPR, which is why they never le
 ## Testing
 
 - Vitest unit tests for scoring, profile updates and the planner. For example: closed places are never planned, step-free profiles get only step-free places, the walking cap holds, and a quiet slot beats a crowded one when tastes are equal.
-- Zod validation of every catalogue file in CI.
-- Manual check on two real phones (one iOS, one Android) before the demo.
+- Zod validation of every catalogue file, as a Vitest test.
+- Playwright end-to-end tests against the production build, in a Pixel 7 profile (Chromium) and an iPhone 14 profile (WebKit). They check the main flows, no horizontal scroll, no console errors and 44 px tap targets.
+- GitHub Actions runs typecheck, Vitest, build and Playwright on every PR (`.github/workflows/ci.yml`).
+- Real phones: every PR gets a Vercel preview URL over HTTPS, which phone browsers need for location access. Open UI changes on an Android phone and an iPhone before merging, and do a full pass on both before the demo.
 
 ## Open questions
 
