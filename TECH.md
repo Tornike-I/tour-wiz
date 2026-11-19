@@ -141,21 +141,23 @@ Code: `src/profile/` (`createProfile`, `rate`, `walkTimeFactor`, `loadProfile` /
 
 ## 3 · Crowd-aware day planner
 
-Pure function in `src/planner`: `plan(city, profile, day, start, end) → DayPlan`.
+Pure function in `src/planner`: `plan(city, profile, { date, start, end, from? }) → DayPlan`. Times are the city's local wall-clock time; the planner builds dates from those fields, so a phone set to another time zone still gets Prague opening hours and crowd hours.
 
-1. **Filter.** Drop places that are closed that day, places that are not step-free when the profile needs it, and places the user rated 1.
-2. **Score.** `taste = Σ interest weight of the place's tags`, normalised. Unrated places are not penalised.
-3. **Build the day greedily.** From the current time and position, consider every remaining place. For each one, compute the arrival time and value:
+1. **Filter.** Drop places the user rated 1, places whose `stepFree` is `"no"` when the profile needs step-free, and places that match none of the user's interests. Opening hours are checked per visit in step 3.
+2. **Score.** `taste = Σ interest weight of the place's tags`, normalised by the best place. A tag that already appeared in today's plan counts half as much for each earlier stop that had it, so the day mixes interests. Unrated places are not penalised.
+3. **Build the day greedily.** From the current time and position, consider every remaining place, arriving on 15-minute slots:
 
-   `value = taste − α · crowd level at arrival − β · walking minutes`
+   `value = taste − 0.6 · crowd/4 − 0.6 · walk minutes/30 − 0.25 · wait minutes/60`
 
-   Skip candidates that would be closed at arrival, end after closing or after the day ends, or break the walking cap. If waiting up to an hour gives a quieter slot, try that too. Add the best candidate and repeat.
-4. **Rest stops.** When the walking time since the last stop or rest exceeds the profile limit, insert the nearest rest point.
-5. **Explain.** Every stop carries its reasons, for example "matches: tea-house, art" and "quiet at 09:30 (level 1 of 4)". This is the "clear rules you can check".
+   Crowd is the highest level during the whole visit, not only at arrival. Waiting is tried for 0, 30 and 60 minutes, and until opening time when the place is closed on arrival (up to 90 minutes). Skip candidates that are not open for the whole visit, end after the day ends, or break the walking cap. Add the best candidate and repeat until nothing fits.
+4. **Rest stops.** Part 5: when the walking time since the last stop or rest exceeds the profile limit, insert the nearest rest point.
+5. **Explain.** Every stop carries its reasons: "Matches: tea-house, art", "Quiet at 09:30 (quiet, level 1 of 4)", "Waits 45 min for it to open", "Waits 30 min for a quieter slot", "Step-free access is limited".
 
-α and β are tuned against the demo city. Greedy is enough for 30–50 places. Upgrade to a few greedy runs with different starting stops only if the plans look poor.
+Walking times are matrix seconds × the pace factor. The walking cap uses distance ≈ matrix seconds × 1.3 m/s, because the catalogue stores times, not distances. The first leg, from `from` or the city centre, is a straight-line estimate.
 
-Success metric support: the plan reports what share of its stops land at crowd level ≤ 1.
+The weights live in `WEIGHTS` in `src/planner/plan.ts` and are tuned by hand against Prague. Greedy is enough for 30–50 places.
+
+Success metric support: the plan reports `quietShare`, the share of its stops at crowd level ≤ 1. With the placeholder crowd curves it is 0% for every plan; it becomes meaningful once real counts are in `data/crowd/prague.csv`.
 
 ## 4 · Map and route slider
 
