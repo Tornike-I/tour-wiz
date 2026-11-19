@@ -2,8 +2,18 @@ import { expect, test, type Page } from "@playwright/test";
 
 let errors: string[] = [];
 
+const routeCalls: unknown[] = [];
+
 test.beforeEach(async ({ page }) => {
   errors = [];
+  routeCalls.length = 0;
+  // Tests never call OpenStreetMap or OpenRouteService: tiles are blank and the proxy is faked.
+  await page.route("https://tile.openstreetmap.org/**", (r) => r.fulfill({ status: 204 }));
+  await page.route("**/api/route", async (r) => {
+    const body = r.request().postDataJSON() as { from: number[]; to: number[] };
+    routeCalls.push(body);
+    await r.fulfill({ json: { path: [body.from, [50.087, 14.415], body.to], distanceMetres: 950, durationSeconds: 780 } });
+  });
   page.on("pageerror", (err) => errors.push(err.message));
   page.on("console", (msg) => {
     if (msg.type() === "error") errors.push(msg.text());
@@ -22,16 +32,24 @@ async function onboard(page: Page, interests = ["Castles", "Art", "Viewpoints"])
 }
 
 async function expectPhoneFriendly(page: Page) {
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  // Leaflet shrinks markers while it animates a zoom; measure once the map is still.
+  await page.waitForFunction(() => !document.querySelector(".leaflet-zoom-anim"));
+  // One pass inside the page: a call per control is too slow for WebKit with a full day plan.
+  const { overflow, tooSmall } = await page.evaluate(() => {
+    const selector = "button, a[href], input, select, textarea, [role=button], [role=slider], [role=switch]";
+    const tooSmall = [...document.querySelectorAll<HTMLElement>(selector)]
+      // The map credit is an inline text link, which WCAG 2.5.8 exempts from the target size.
+      .filter((el) => !el.closest(".leaflet-control-attribution"))
+      .filter((el) => {
+        const box = el.getBoundingClientRect();
+        const visible = box.width > 0 && box.height > 0 && getComputedStyle(el).visibility !== "hidden";
+        return visible && (box.width < 44 || box.height < 44);
+      })
+      .map((el) => el.outerHTML.slice(0, 80));
+    return { overflow: document.documentElement.scrollWidth - window.innerWidth, tooSmall };
+  });
   expect(overflow).toBeLessThanOrEqual(0);
-  const controls = page.locator("button, a[href], input, select, textarea, [role=button], [role=slider], [role=switch]");
-  for (const control of await controls.all()) {
-    if (!(await control.isVisible())) continue;
-    const box = await control.boundingBox();
-    expect(box, await control.evaluate((el) => el.outerHTML.slice(0, 80))).not.toBeNull();
-    expect(box!.height).toBeGreaterThanOrEqual(44);
-    expect(box!.width).toBeGreaterThanOrEqual(44);
-  }
+  expect(tooSmall).toEqual([]);
 }
 
 test("onboarding asks for at least one interest", async ({ page }) => {
@@ -81,4 +99,28 @@ test("changes interests and deletes the data", async ({ page }) => {
   await page.getByRole("button", { name: "Yes, delete" }).click();
   await expect(page.getByRole("heading", { name: "What do you like?" })).toBeVisible();
   expect(await page.evaluate(() => localStorage.getItem("tourwiz.profile"))).toBeNull();
+});
+
+test("shows each leg on the map and asks the proxy for a scenic route", async ({ page }) => {
+  await onboard(page);
+  const map = page.getByRole("region", { name: "Map of today's stops" });
+  await expect(map).toBeVisible();
+  await expect(map.locator(".stop-marker")).toHaveCount(await page.getByRole("heading", { level: 4 }).count());
+  await expect(page.getByRole("link", { name: "OpenStreetMap" })).toBeVisible();
+  await expect(page.getByText("13 min · 0.9 km")).toBeVisible();
+
+  await page.getByRole("button", { name: "Next leg" }).click();
+  await expect(page.getByText(/^Leg 2: /)).toBeVisible();
+
+  await page.getByRole("slider").fill("1");
+  await expect.poll(() => routeCalls.at(-1)).toMatchObject({ scenic: 1, stepFree: false });
+  expect(Object.keys(routeCalls.at(-1) as object).sort()).toEqual(["from", "scenic", "stepFree", "to"]);
+  await expectPhoneFriendly(page);
+});
+
+test("disables the scenic slider for step-free routes", async ({ page }) => {
+  await page.getByRole("switch", { name: /step-free/ }).click();
+  await onboard(page, ["Art", "Museums"]);
+  await expect(page.getByRole("slider")).toBeDisabled();
+  await expect.poll(() => routeCalls.at(-1)).toMatchObject({ scenic: 0, stepFree: true });
 });
