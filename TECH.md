@@ -120,6 +120,7 @@ Build steps:
 
 ```ts
 type Profile = {
+  version: 1;                               // bump when the stored shape changes
   interests: Partial<Record<Tag, number>>;  // weight 0..1
   pace: "relaxed" | "normal" | "brisk";
   maxWalkKmPerDay: number;
@@ -130,17 +131,19 @@ type Profile = {
 ```
 
 - Onboarding (about 30 seconds) picks interests, pace and access needs. Each picked interest starts at weight 1.
-- A rating moves the weights of that place's tags: a 5 pulls them up, a 1 pushes them down. Since tags are shared, this carries over to other cities.
-- Stored in `localStorage` under one key, with a "delete my data" button. Nothing leaves the phone.
+- A rating moves the weights of that place's tags by `0.2 × (stars − 3) / 2`: 5 stars +0.2, 4 stars +0.1, 3 stars nothing, 2 stars −0.1, 1 star −0.2, kept within 0..1. Tags the traveller never picked start at 0, so a high rating can add a new interest. Rating a place again replaces the earlier rating's effect. Since tags are shared, this carries over to other cities.
+- Stored in `localStorage` under the key `tourwiz.profile`, validated on load (broken or unknown-version data is ignored), with a "delete my data" button. Storage that throws, as in Safari private mode, is treated as empty. Nothing leaves the phone.
 
-Pace sets the walking speed factor (applied to matrix times) and the default daily walking cap.
+Pace sets the walking-time factor applied to matrix times and the default daily walking cap: relaxed ×1.25 and 6 km, normal ×1 and 10 km, brisk ×0.85 and 14 km.
+
+Code: `src/profile/` (`createProfile`, `rate`, `walkTimeFactor`, `loadProfile` / `saveProfile` / `deleteProfile`).
 
 ## 3 · Crowd-aware day planner
 
 Pure function in `src/planner`: `plan(city, profile, day, start, end) → DayPlan`.
 
 1. **Filter.** Drop places that are closed that day, places that are not step-free when the profile needs it, and places the user rated 1.
-2. **Score.** `taste = Σ interest weight of the place's tags`, normalised. Unrated places the user has seen are not penalised.
+2. **Score.** `taste = Σ interest weight of the place's tags`, normalised. Unrated places are not penalised.
 3. **Build the day greedily.** From the current time and position, consider every remaining place. For each one, compute the arrival time and value:
 
    `value = taste − α · crowd level at arrival − β · walking minutes`
