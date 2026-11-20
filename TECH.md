@@ -114,7 +114,7 @@ Build steps:
 2. Overpass query for those places by OSM id. Read `opening_hours`, `wheelchair` and location. Seed overrides win. A place with no hours anywhere fails the build; a place with no `wheelchair` tag is treated as `"no"`.
 3. Merge with `data/crowd/prague.csv` (hourly levels and their source). A place with no rows gets a generic curve whose `crowdSource` starts with `PLACEHOLDER`, so unmeasured data is always visible.
 4. Fetch rest points within 150 m of the places from Overpass (`amenity=bench|cafe|toilets`), keeping the two nearest of each kind per place.
-5. Call the ORS matrix endpoint twice (walking and wheelchair). 50 × 50 = 2,500 pairs, within one request's limit. Any unreachable pair fails the build. Without an ORS key, `--estimate-walk` fills both matrices with straight-line estimates and sets `walkSource: "estimate"`; the demo build must use `"openrouteservice"`.
+5. Call the ORS matrix endpoint for walking (50 × 50 = 2,500 pairs, within one request's limit) and for wheelchair, over only the places whose `stepFree` is not `"no"`. The public server refuses wheelchair matrices with long trips ("visited nodes" limit); the build then asks for one two-place matrix per pair, which leaves the live app's directions quota alone. The other `walkStepFree` entries copy the walking times, because step-free plans never visit those places. Any unreachable pair fails the build. Without an ORS key, `--estimate-walk` fills both matrices with straight-line estimates and sets `walkSource: "estimate"`; the demo build must use `"openrouteservice"`.
 6. Validate with the Zod schema (including every `opening_hours` string) and write the JSON file.
 
 ## 2 · Taste profile
@@ -221,6 +221,5 @@ Access needs count as health-related data under GDPR, which is why they never le
 ## Open questions
 
 - **Crowd data source.** The hackathon requires properly licensed content. Scraping Google Popular Times breaks Google's terms. Plan: our own hourly counts at a few sights, plus figures from public sources we can cite, recorded with their source in `data/crowd/prague.csv`.
-- **Scenic slider in step-free mode.** Check whether ORS accepts `green` and `quiet` weightings on the `wheelchair` profile. If not, the slider is disabled when step-free is on.
 - **Map tiles.** The public OSM tile server is acceptable for a demo with attribution. Anything beyond that needs a free tile provider.
 - **ORS free-tier limits.** Confirm the current daily quotas for directions and matrix before relying on them.

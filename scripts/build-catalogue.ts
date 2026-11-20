@@ -9,10 +9,12 @@ import type { City } from "../src/catalogue/schema";
 import {
   checkMatrix,
   estimateWalkSeconds,
+  fillStepFree,
   mergePlace,
   parseCrowdCsv,
   pickRestPoints,
   seedSchema,
+  stepFreeIndices,
   type OsmElement,
 } from "./catalogue-lib";
 
@@ -71,7 +73,17 @@ async function main() {
     if (!key) throw new Error("ORS_API_KEY is not set. Put it in .env, or run with --estimate-walk.");
     console.log("Fetching walking matrices from OpenRouteService…");
     walk = checkMatrix(ids, await orsMatrix("foot-walking", locations, key), "foot-walking");
-    walkStepFree = checkMatrix(ids, await orsMatrix("wheelchair", locations, key), "wheelchair");
+    const stepFree = stepFreeIndices(places);
+    const subIds = stepFree.map((i) => ids[i]!);
+    const subLocations = stepFree.map((i) => locations[i]!);
+    let sub: (number | null)[][];
+    try {
+      sub = await orsMatrix("wheelchair", subLocations, key);
+    } catch (err) {
+      console.warn(`  ${String(err).slice(0, 160)}; asking ORS pair by pair instead`);
+      sub = await orsWheelchairPairs(subLocations, key);
+    }
+    walkStepFree = fillStepFree(walk, stepFree, checkMatrix(subIds, sub, "wheelchair"));
   }
 
   const city: City = parseCity({
@@ -144,6 +156,38 @@ async function orsMatrix(
   if (!res.ok) throw new Error(`ORS ${profile} matrix answered ${res.status}: ${await res.text()}`);
   const json = (await res.json()) as { durations: (number | null)[][] };
   return json.durations;
+}
+
+// The public ORS server refuses wheelchair matrices with long trips ("visited nodes" limit) but answers two-place ones.
+async function orsWheelchairPairs(locations: [number, number][], key: string): Promise<(number | null)[][]> {
+  const rows: (number | null)[][] = locations.map(() => locations.map(() => 0));
+  for (let i = 0; i < locations.length; i++) {
+    for (let j = i + 1; j < locations.length; j++) {
+      for (let attempt = 0; ; attempt++) {
+        const res = await fetch(`${ORS_MATRIX}/wheelchair`, {
+          method: "POST",
+          headers: { Authorization: key, "Content-Type": "application/json", "User-Agent": USER_AGENT },
+          body: JSON.stringify({ locations: [locations[i], locations[j]].map((p) => [p![1], p![0]]), metrics: ["duration"] }),
+        });
+        await new Promise((r) => setTimeout(r, 2000)); // free plan: 40 matrix requests a minute
+        if (res.ok) {
+          const { durations } = (await res.json()) as { durations: (number | null)[][] };
+          rows[i]![j] = durations[0]![1]!;
+          rows[j]![i] = durations[1]![0]!;
+          break;
+        }
+        if (res.status === 403) throw new Error(`ORS wheelchair matrix: ${await res.text()}`);
+        if (res.status !== 429 || attempt === 4) {
+          console.warn(`  ORS answered ${res.status} for places ${i + 1} and ${j + 1}`);
+          rows[i]![j] = rows[j]![i] = null;
+          break;
+        }
+        await new Promise((r) => setTimeout(r, 15000));
+      }
+    }
+    console.log(`  wheelchair times from place ${i + 1} of ${locations.length}`);
+  }
+  return rows;
 }
 
 function readJson(path: string): unknown {
