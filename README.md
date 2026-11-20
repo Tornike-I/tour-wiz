@@ -8,7 +8,7 @@ Team Mercury's entry to the **Smart City 2035 Student Hackathon 2026** (Prague).
 |---|---|
 | Scope fixed | 8 Nov 2026 (idea pitch). The scope below cannot change. |
 | Supervisor consultations | 9–20 Nov 2026, at most 2 × 30 min |
-| Final demo and pitch | **21 Nov 2026, 10:00 CET** (working product required) |
+| Final demo and pitch | **20 Nov 2026, from 14:00 CET** (moved from 21 Nov; working product required) |
 
 Source material is in [`docs/`](docs): the [hackathon brief](docs/hackathon-brief.docx), our [idea pitch](docs/idea-pitch.pdf) and the [street interview sheet](docs/tourist-interview-sheet.docx).
 

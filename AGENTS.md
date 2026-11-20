@@ -4,7 +4,7 @@ Instructions for coding agents (Claude Code, Codex, Copilot, Cursor and others) 
 
 ## Project
 
-Tour Wiz is a mobile web app that plans a visitor's day around their tastes, each sight's quiet hours and their walking pace. It is Team Mercury's entry to the Smart City 2035 hackathon. The final demo is on **21 Nov 2026 at 10:00 CET**, and it must be a working product.
+Tour Wiz is a mobile web app that plans a visitor's day around their tastes, each sight's quiet hours and their walking pace. It is Team Mercury's entry to the Smart City 2035 hackathon. The final demo is on **20 Nov 2026 from 14:00 CET** (moved from 21 Nov), and it must be a working product.
 
 ## Read first
 
