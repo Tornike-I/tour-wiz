@@ -1,0 +1,829 @@
+{
+  "id": "berlin",
+  "name": "Berlin",
+  "countryCode": "de",
+  "timezone": "Europe/Berlin",
+  "center": [52.5163, 13.3777],
+  "walkSource": "estimate",
+  "places": [
+    {
+      "id": "brandenburg-gate",
+      "osmId": "way/518071791",
+      "name": "Brandenburg Gate",
+      "location": [52.516275, 13.377703],
+      "tags": [
+        "history",
+        "architecture"
+      ],
+      "openingHours": "24/7",
+      "visitMinutes": 20,
+      "crowd": {
+        "weekday": [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 0, 0, 0],
+        "weekend": [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4, 4, 3, 3, 2, 2, 1, 1, 1, 0, 0, 0]
+      },
+      "crowdSource": "PLACEHOLDER: generic sightseeing curve, not measured",
+      "stepFree": "yes"
+    },
+    {
+      "id": "reichstag",
+      "osmId": "relation/2201742",
+      "name": "Reichstag Building",
+      "location": [52.518596, 13.376101],
+      "tags": [
+        "history",
+        "architecture",
+        "viewpoint"
+      ],
+      "openingHours": "Mo-Su 08:00-24:00",
+      "visitMinutes": 60,
+      "crowd": {
+        "weekday": [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 0, 0, 0],
+        "weekend": [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4, 4, 3, 3, 2, 2, 1, 1, 1, 0, 0, 0]
+      },
+      "crowdSource": "PLACEHOLDER: generic sightseeing curve, not measured",
+      "stepFree": "yes",
+      "url": "https://www.bundestag.de/en/visittheBundestag"
+    },
+    {
+      "id": "holocaust-memorial",
+      "osmId": "way/172234733",
+      "name": "Memorial to the Murdered Jews of Europe",
+      "location": [52.5139, 13.378714],
+      "tags": [
+        "history"
+      ],
+      "openingHours": "24/7",
+      "visitMinutes": 30,
+      "crowd": {
+        "weekday": [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 0, 0, 0],
+        "weekend": [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4, 4, 3, 3, 2, 2, 1, 1, 1, 0, 0, 0]
+      },
+      "crowdSource": "PLACEHOLDER: generic sightseeing curve, not measured",
+      "stepFree": "limited",
+      "url": "https://www.stiftung-denkmal.de"
+    },
+    {
+      "id": "berlin-cathedral",
+      "osmId": "way/313670734",
+      "name": "Berlin Cathedral",
+      "location": [52.519086, 13.401028],
+      "tags": [
+        "church",
+        "architecture",
+        "viewpoint"
+      ],
+      "openingHours": "Mo-Fr 09:00-18:00; Sa 09:00-17:00; Su,PH 12:00-17:00; Jun-Aug Mo-Sa 09:00-19:00; Jun-Aug Su,PH 12:00-19:00",
+      "visitMinutes": 60,
+      "crowd": {
+        "weekday": [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 0, 0, 0],
+        "weekend": [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4, 4, 3, 3, 2, 2, 1, 1, 1, 0, 0, 0]
+      },
+      "crowdSource": "PLACEHOLDER: generic sightseeing curve, not measured",
+      "stepFree": "yes",
+      "url": "https://www.berlinerdom.de/"
+    },
+    {
+      "id": "altes-museum",
+      "osmId": "relation/3619",
+      "name": "Altes Museum",
+      "location": [52.519453, 13.398787],
+      "tags": [
+        "museum",
+        "art",
+        "history"
+      ],
+      "openingHours": "Mo off; Tu-Fr 10:00-17:00; Sa-Su 10:00-18:00; PH 10:00-18:00; Dec 24 off; Dec 31 off",
+      "visitMinutes": 90,
+      "crowd": {
+        "weekday": [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 0, 0, 0],
+        "weekend": [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4, 4, 3, 3, 2, 2, 1, 1, 1, 0, 0, 0]
+      },
+      "crowdSource": "PLACEHOLDER: generic sightseeing curve, not measured",
+      "stepFree": "yes",
+      "url": "https://www.smb.museum/museen-einrichtungen/altes-museum/home/"
+    },
+    {
+      "id": "neues-museum",
+      "osmId": "way/18578139",
+      "name": "Neues Museum",
+      "location": [52.520184, 13.39774],
+      "tags": [
+        "museum",
+        "history",
+        "art"
+      ],
+      "openingHours": "Mo off; Tu-Su 10:00-18:00; PH 10:00-18:00; Dec 24 off; Dec 31 off",
+      "visitMinutes": 120,
+      "crowd": {
+        "weekday": [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 0, 0, 0],
+        "weekend": [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4, 4, 3, 3, 2, 2, 1, 1, 1, 0, 0, 0]
+      },
+      "crowdSource": "PLACEHOLDER: generic sightseeing curve, not measured",
+      "stepFree": "yes",
+      "url": "https://www.smb.museum/museen-einrichtungen/neues-museum/"
+    },
+    {
+      "id": "alte-nationalgalerie",
+      "osmId": "way/313670733",
+      "name": "Alte Nationalgalerie",
+      "location": [52.520834, 13.398317],
+      "tags": [
+        "museum",
+        "art"
+      ],
+      "openingHours": "Mo off; Tu-Su 10:00-18:00; PH 10:00-18:00; Dec 24 off; Dec 31 off",
+      "visitMinutes": 90,
+      "crowd": {
+        "weekday": [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 0, 0, 0],
+        "weekend": [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4, 4, 3, 3, 2, 2, 1, 1, 1, 0, 0, 0]
+      },
+      "crowdSource": "PLACEHOLDER: generic sightseeing curve, not measured",
+      "stepFree": "yes",
+      "url": "https://www.smb.museum/en/museums-institutions/alte-nationalgalerie/home/"
+    },
+    {
+      "id": "humboldt-forum",
+      "osmId": "node/8413352835",
+      "name": "Humboldt Forum",
+      "location": [52.517032, 13.401227],
+      "tags": [
+        "museum",
+        "architecture",
+        "viewpoint",
+        "kids"
+      ],
+      "openingHours": "Mo,We-Su 10:30-18:30; Tu off",
+      "visitMinutes": 90,
+      "crowd": {
+        "weekday": [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 0, 0, 0],
+        "weekend": [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4, 4, 3, 3, 2, 2, 1, 1, 1, 0, 0, 0]
+      },
+      "crowdSource": "PLACEHOLDER: generic sightseeing curve, not measured",
+      "stepFree": "yes",
+      "url": "https://www.humboldtforum.org"
+    },
+    {
+      "id": "german-historical-museum",
+      "osmId": "node/3203167561",
+      "name": "German Historical Museum",
+      "location": [52.517748, 13.397023],
+      "tags": [
+        "museum",
+        "history"
+      ],
+      "openingHours": "Mo-Su 10:00-18:00; Dec 24 off",
+      "visitMinutes": 120,
+      "crowd": {
+        "weekday": [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 0, 0, 0],
+        "weekend": [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4, 4, 3, 3, 2, 2, 1, 1, 1, 0, 0, 0]
+      },
+      "crowdSource": "PLACEHOLDER: generic sightseeing curve, not measured",
+      "stepFree": "yes",
+      "url": "https://www.dhm.de/"
+    },
+    {
+      "id": "tv-tower",
+      "osmId": "way/556435241",
+      "name": "Berlin TV Tower",
+      "location": [52.52082, 13.409421],
+      "tags": [
+        "viewpoint",
+        "architecture",
+        "kids"
+      ],
+      "openingHours": "Mo-Su 10:00-22:00",
+      "visitMinutes": 60,
+      "crowd": {
+        "weekday": [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 0, 0, 0],
+        "weekend": [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4, 4, 3, 3, 2, 2, 1, 1, 1, 0, 0, 0]
+      },
+      "crowdSource": "PLACEHOLDER: generic sightseeing curve, not measured",
+      "stepFree": "no",
+      "url": "https://www.tv-turm.de/"
+    },
+    {
+      "id": "gendarmenmarkt",
+      "osmId": "way/844740667",
+      "name": "Gendarmenmarkt",
+      "location": [52.513612, 13.392289],
+      "tags": [
+        "architecture",
+        "history"
+      ],
+      "openingHours": "24/7",
+      "visitMinutes": 20,
+      "crowd": {
+        "weekday": [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 0, 0, 0],
+        "weekend": [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4, 4, 3, 3, 2, 2, 1, 1, 1, 0, 0, 0]
+      },
+      "crowdSource": "PLACEHOLDER: generic sightseeing curve, not measured",
+      "stepFree": "yes"
+    },
+    {
+      "id": "konzerthaus",
+      "osmId": "way/217512230",
+      "name": "Konzerthaus Berlin",
+      "location": [52.513581, 13.391855],
+      "tags": [
+        "music",
+        "architecture"
+      ],
+      "openingHours": "Mo-Su 19:00-22:00",
+      "visitMinutes": 120,
+      "crowd": {
+        "weekday": [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 0, 0, 0],
+        "weekend": [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4, 4, 3, 3, 2, 2, 1, 1, 1, 0, 0, 0]
+      },
+      "crowdSource": "PLACEHOLDER: generic sightseeing curve, not measured",
+      "stepFree": "yes",
+      "url": "https://www.konzerthaus.de/"
+    },
+    {
+      "id": "checkpoint-charlie",
+      "osmId": "node/417346627",
+      "name": "Checkpoint Charlie",
+      "location": [52.507432, 13.390381],
+      "tags": [
+        "history"
+      ],
+      "openingHours": "24/7",
+      "visitMinutes": 20,
+      "crowd": {
+        "weekday": [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 0, 0, 0],
+        "weekend": [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4, 4, 3, 3, 2, 2, 1, 1, 1, 0, 0, 0]
+      },
+      "crowdSource": "PLACEHOLDER: generic sightseeing curve, not measured",
+      "stepFree": "yes",
+      "url": "https://www.berlin.de/en/attractions-and-sights/3560059-3104052-checkpoint-charlie.en.html"
+    },
+    {
+      "id": "topography-of-terror",
+      "osmId": "way/24368681",
+      "name": "Topography of Terror",
+      "location": [52.506186, 13.384339],
+      "tags": [
+        "museum",
+        "history"
+      ],
+      "openingHours": "Mo-Su,PH 10:00-20:00; Jan 01,Dec 24,Dec 31 off",
+      "visitMinutes": 75,
+      "crowd": {
+        "weekday": [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 0, 0, 0],
+        "weekend": [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4, 4, 3, 3, 2, 2, 1, 1, 1, 0, 0, 0]
+      },
+      "crowdSource": "PLACEHOLDER: generic sightseeing curve, not measured",
+      "stepFree": "yes",
+      "url": "https://www.topographie.de/"
+    },
+    {
+      "id": "markthalle-neun",
+      "osmId": "relation/9503840",
+      "name": "Markthalle Neun",
+      "location": [52.502169, 13.431494],
+      "tags": [
+        "food-market",
+        "shopping"
+      ],
+      "openingHours": "Mo-Sa 12:00-18:00",
+      "visitMinutes": 60,
+      "crowd": {
+        "weekday": [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 0, 0, 0],
+        "weekend": [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4, 4, 3, 3, 2, 2, 1, 1, 1, 0, 0, 0]
+      },
+      "crowdSource": "PLACEHOLDER: generic sightseeing curve, not measured",
+      "stepFree": "limited",
+      "url": "https://markthalleneun.de/"
+    },
+    {
+      "id": "hackesche-hoefe",
+      "osmId": "way/337201828",
+      "name": "Hackesche Höfe",
+      "location": [52.524536, 13.401636],
+      "tags": [
+        "shopping",
+        "architecture",
+        "nightlife"
+      ],
+      "openingHours": "24/7",
+      "visitMinutes": 45,
+      "crowd": {
+        "weekday": [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 0, 0, 0],
+        "weekend": [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4, 4, 3, 3, 2, 2, 1, 1, 1, 0, 0, 0]
+      },
+      "crowdSource": "PLACEHOLDER: generic sightseeing curve, not measured",
+      "stepFree": "yes"
+    },
+    {
+      "id": "natural-history-museum",
+      "osmId": "node/538692583",
+      "name": "Museum für Naturkunde",
+      "location": [52.53049, 13.379115],
+      "tags": [
+        "museum",
+        "kids"
+      ],
+      "openingHours": "Tu-Fr 09:30-18:00; Sa,Su 10:00-18:00",
+      "visitMinutes": 120,
+      "crowd": {
+        "weekday": [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 0, 0, 0],
+        "weekend": [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4, 4, 3, 3, 2, 2, 1, 1, 1, 0, 0, 0]
+      },
+      "crowdSource": "PLACEHOLDER: generic sightseeing curve, not measured",
+      "stepFree": "yes",
+      "url": "https://www.museumfuernaturkunde.berlin/"
+    },
+    {
+      "id": "monbijou-park",
+      "osmId": "way/340138573",
+      "name": "Monbijou Park",
+      "location": [52.523177, 13.396817],
+      "tags": [
+        "park",
+        "river"
+      ],
+      "openingHours": "24/7",
+      "visitMinutes": 30,
+      "crowd": {
+        "weekday": [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 0, 0, 0],
+        "weekend": [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4, 4, 3, 3, 2, 2, 1, 1, 1, 0, 0, 0]
+      },
+      "crowdSource": "PLACEHOLDER: generic sightseeing curve, not measured",
+      "stepFree": "no"
+    },
+    {
+      "id": "tiergarten",
+      "osmId": "relation/7643526",
+      "name": "Tiergarten",
+      "location": [52.514459, 13.354375],
+      "tags": [
+        "park"
+      ],
+      "openingHours": "24/7",
+      "visitMinutes": 60,
+      "crowd": {
+        "weekday": [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 0, 0, 0],
+        "weekend": [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4, 4, 3, 3, 2, 2, 1, 1, 1, 0, 0, 0]
+      },
+      "crowdSource": "PLACEHOLDER: generic sightseeing curve, not measured",
+      "stepFree": "no"
+    },
+    {
+      "id": "cafe-am-neuen-see",
+      "osmId": "way/118616321",
+      "name": "Café am Neuen See",
+      "location": [52.510511, 13.344224],
+      "tags": [
+        "beer",
+        "cafe",
+        "park"
+      ],
+      "openingHours": "Mo-Su 12:00-18:00",
+      "visitMinutes": 60,
+      "crowd": {
+        "weekday": [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 0, 0, 0],
+        "weekend": [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4, 4, 3, 3, 2, 2, 1, 1, 1, 0, 0, 0]
+      },
+      "crowdSource": "PLACEHOLDER: generic sightseeing curve, not measured",
+      "stepFree": "yes",
+      "url": "https://www.cafeamneuensee.de/biergarten"
+    },
+    {
+      "id": "cafe-einstein-unter-den-linden",
+      "osmId": "node/1412218896",
+      "name": "Café Einstein Unter den Linden",
+      "location": [52.517102, 13.385946],
+      "tags": [
+        "cafe"
+      ],
+      "openingHours": "Mo-Su 07:00-22:00",
+      "visitMinutes": 45,
+      "crowd": {
+        "weekday": [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 0, 0, 0],
+        "weekend": [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4, 4, 3, 3, 2, 2, 1, 1, 1, 0, 0, 0]
+      },
+      "crowdSource": "PLACEHOLDER: generic sightseeing curve, not measured",
+      "stepFree": "yes"
+    },
+    {
+      "id": "claerchens-ballhaus",
+      "osmId": "node/429735547",
+      "name": "Clärchens Ballhaus",
+      "location": [52.526474, 13.39691],
+      "tags": [
+        "nightlife",
+        "music"
+      ],
+      "openingHours": "Tu-Fr 17:00-23:00; Sa-Su 14:00-23:00",
+      "visitMinutes": 90,
+      "crowd": {
+        "weekday": [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 3, 3, 3, 2, 2, 1, 1, 1, 1, 0, 0, 0],
+        "weekend": [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4, 4, 3, 3, 2, 2, 1, 1, 1, 0, 0, 0]
+      },
+      "crowdSource": "PLACEHOLDER: generic sightseeing curve, not measured",
+      "stepFree": "no",
+      "url": "https://www.claerchensball.haus/"
+    }
+  ],
+  "restPoints": [
+    {
+      "location": [52.515902, 13.377831],
+      "kind": "bench"
+    },
+    {
+      "location": [52.51581, 13.377845],
+      "kind": "bench"
+    },
+    {
+      "location": [52.51673, 13.379773],
+      "kind": "cafe"
+    },
+    {
+      "location": [52.517102, 13.385946],
+      "kind": "cafe"
+    },
+    {
+      "location": [52.517259, 13.37803],
+      "kind": "toilets"
+    },
+    {
+      "location": [52.516372, 13.375528],
+      "kind": "toilets"
+    },
+    {
+      "location": [52.519435, 13.375686],
+      "kind": "bench"
+    },
+    {
+      "location": [52.519436, 13.375597],
+      "kind": "bench"
+    },
+    {
+      "location": [52.519048, 13.375946],
+      "kind": "toilets"
+    },
+    {
+      "location": [52.513832, 13.376769],
+      "kind": "bench"
+    },
+    {
+      "location": [52.513761, 13.376763],
+      "kind": "bench"
+    },
+    {
+      "location": [52.51864, 13.401044],
+      "kind": "bench"
+    },
+    {
+      "location": [52.518631, 13.401019],
+      "kind": "bench"
+    },
+    {
+      "location": [52.519124, 13.401554],
+      "kind": "cafe"
+    },
+    {
+      "location": [52.519203, 13.402645],
+      "kind": "cafe"
+    },
+    {
+      "location": [52.519497, 13.400028],
+      "kind": "toilets"
+    },
+    {
+      "location": [52.523374, 13.400853],
+      "kind": "toilets"
+    },
+    {
+      "location": [52.51916, 13.398001],
+      "kind": "bench"
+    },
+    {
+      "location": [52.519141, 13.398021],
+      "kind": "bench"
+    },
+    {
+      "location": [52.519117, 13.398527],
+      "kind": "cafe"
+    },
+    {
+      "location": [52.519808, 13.398066],
+      "kind": "cafe"
+    },
+    {
+      "location": [52.520357, 13.398755],
+      "kind": "bench"
+    },
+    {
+      "location": [52.520343, 13.398925],
+      "kind": "bench"
+    },
+    {
+      "location": [52.523054, 13.395253],
+      "kind": "toilets"
+    },
+    {
+      "location": [52.520448, 13.39895],
+      "kind": "bench"
+    },
+    {
+      "location": [52.517531, 13.400714],
+      "kind": "bench"
+    },
+    {
+      "location": [52.517478, 13.400594],
+      "kind": "bench"
+    },
+    {
+      "location": [52.517202, 13.401177],
+      "kind": "cafe"
+    },
+    {
+      "location": [52.519849, 13.408783],
+      "kind": "toilets"
+    },
+    {
+      "location": [52.517791, 13.396023],
+      "kind": "bench"
+    },
+    {
+      "location": [52.517829, 13.398093],
+      "kind": "bench"
+    },
+    {
+      "location": [52.51694, 13.396218],
+      "kind": "cafe"
+    },
+    {
+      "location": [52.51418, 13.391444],
+      "kind": "toilets"
+    },
+    {
+      "location": [52.520592, 13.409994],
+      "kind": "bench"
+    },
+    {
+      "location": [52.52063, 13.410085],
+      "kind": "bench"
+    },
+    {
+      "location": [52.52084, 13.410107],
+      "kind": "cafe"
+    },
+    {
+      "location": [52.521377, 13.409661],
+      "kind": "cafe"
+    },
+    {
+      "location": [52.513352, 13.392305],
+      "kind": "bench"
+    },
+    {
+      "location": [52.513934, 13.392306],
+      "kind": "bench"
+    },
+    {
+      "location": [52.513805, 13.391715],
+      "kind": "cafe"
+    },
+    {
+      "location": [52.514071, 13.390778],
+      "kind": "cafe"
+    },
+    {
+      "location": [52.512821, 13.392836],
+      "kind": "toilets"
+    },
+    {
+      "location": [52.512418, 13.391681],
+      "kind": "bench"
+    },
+    {
+      "location": [52.512444, 13.391678],
+      "kind": "bench"
+    },
+    {
+      "location": [52.507545, 13.390114],
+      "kind": "cafe"
+    },
+    {
+      "location": [52.507612, 13.39151],
+      "kind": "cafe"
+    },
+    {
+      "location": [52.50658, 13.383755],
+      "kind": "toilets"
+    },
+    {
+      "location": [52.506476, 13.390707],
+      "kind": "cafe"
+    },
+    {
+      "location": [52.501168, 13.431445],
+      "kind": "bench"
+    },
+    {
+      "location": [52.5011, 13.431375],
+      "kind": "bench"
+    },
+    {
+      "location": [52.502085, 13.431415],
+      "kind": "cafe"
+    },
+    {
+      "location": [52.501886, 13.43189],
+      "kind": "cafe"
+    },
+    {
+      "location": [52.502344, 13.431606],
+      "kind": "toilets"
+    },
+    {
+      "location": [52.524687, 13.401468],
+      "kind": "bench"
+    },
+    {
+      "location": [52.524713, 13.401354],
+      "kind": "bench"
+    },
+    {
+      "location": [52.52446, 13.401802],
+      "kind": "cafe"
+    },
+    {
+      "location": [52.524863, 13.401907],
+      "kind": "cafe"
+    },
+    {
+      "location": [52.529877, 13.379588],
+      "kind": "bench"
+    },
+    {
+      "location": [52.529857, 13.379519],
+      "kind": "bench"
+    },
+    {
+      "location": [52.527189, 13.396902],
+      "kind": "cafe"
+    },
+    {
+      "location": [52.52745, 13.398127],
+      "kind": "cafe"
+    },
+    {
+      "location": [52.52334, 13.397607],
+      "kind": "bench"
+    },
+    {
+      "location": [52.523329, 13.397653],
+      "kind": "bench"
+    },
+    {
+      "location": [52.522842, 13.398625],
+      "kind": "cafe"
+    },
+    {
+      "location": [52.523712, 13.40025],
+      "kind": "cafe"
+    },
+    {
+      "location": [52.514544, 13.355682],
+      "kind": "bench"
+    },
+    {
+      "location": [52.51455, 13.355746],
+      "kind": "bench"
+    },
+    {
+      "location": [52.511023, 13.344159],
+      "kind": "toilets"
+    },
+    {
+      "location": [52.510262, 13.343074],
+      "kind": "bench"
+    },
+    {
+      "location": [52.510279, 13.343035],
+      "kind": "bench"
+    },
+    {
+      "location": [52.516902, 13.38648],
+      "kind": "bench"
+    },
+    {
+      "location": [52.516906, 13.386531],
+      "kind": "bench"
+    },
+    {
+      "location": [52.517179, 13.386906],
+      "kind": "cafe"
+    },
+    {
+      "location": [52.52657, 13.397157],
+      "kind": "bench"
+    },
+    {
+      "location": [52.526405, 13.397223],
+      "kind": "bench"
+    }
+  ],
+  "walk": {
+    "ids": [
+      "brandenburg-gate",
+      "reichstag",
+      "holocaust-memorial",
+      "berlin-cathedral",
+      "altes-museum",
+      "neues-museum",
+      "alte-nationalgalerie",
+      "humboldt-forum",
+      "german-historical-museum",
+      "tv-tower",
+      "gendarmenmarkt",
+      "konzerthaus",
+      "checkpoint-charlie",
+      "topography-of-terror",
+      "markthalle-neun",
+      "hackesche-hoefe",
+      "natural-history-museum",
+      "monbijou-park",
+      "tiergarten",
+      "cafe-am-neuen-see",
+      "cafe-einstein-unter-den-linden",
+      "claerchens-ballhaus"
+    ],
+    "seconds": [
+      [0, 291, 284, 1673, 1529, 1481, 1543, 1658, 1370, 2293, 1072, 1044, 1357, 1257, 4123, 1936, 1647, 1564, 1655, 2449, 588, 1794],
+      [291, 0, 573, 1755, 1599, 1534, 1585, 1777, 1476, 2359, 1277, 1251, 1636, 1548, 4337, 1924, 1392, 1551, 1602, 2430, 714, 1724],
+      [284, 573, 0, 1681, 1552, 1523, 1596, 1625, 1363, 2304, 956, 926, 1111, 976, 3955, 2028, 1919, 1665, 1714, 2459, 629, 1937],
+      [1673, 1755, 1681, 0, 163, 264, 278, 238, 322, 624, 883, 907, 1542, 1899, 2903, 632, 2029, 558, 3326, 4119, 1086, 902],
+      [1529, 1599, 1552, 163, 0, 112, 163, 328, 233, 765, 816, 836, 1511, 1841, 3049, 621, 1883, 452, 3178, 3977, 944, 823],
+      [1481, 1534, 1523, 264, 112, 0, 85, 439, 286, 825, 851, 869, 1563, 1873, 3160, 573, 1771, 352, 3123, 3929, 903, 730],
+      [1543, 1585, 1596, 278, 163, 85, 0, 485, 368, 781, 937, 954, 1647, 1959, 3180, 488, 1753, 291, 3179, 3990, 972, 660],
+      [1658, 1777, 1625, 238, 328, 439, 485, 0, 307, 724, 743, 771, 1347, 1728, 2737, 868, 2201, 775, 3311, 4082, 1075, 1133],
+      [1370, 1476, 1363, 322, 233, 286, 368, 307, 0, 942, 583, 604, 1281, 1608, 3022, 849, 1939, 628, 3025, 3809, 783, 1009],
+      [2293, 2359, 2304, 624, 765, 825, 781, 724, 942, 0, 1466, 1493, 2048, 2445, 2658, 696, 2408, 928, 3943, 4741, 1707, 1097],
+      [1072, 1277, 956, 883, 816, 851, 937, 743, 583, 1466, 0, 31, 727, 1025, 3060, 1424, 2161, 1151, 2670, 3402, 602, 1523],
+      [1044, 1251, 926, 907, 836, 869, 954, 771, 604, 1493, 31, 0, 719, 1006, 3086, 1442, 2151, 1163, 2640, 3371, 582, 1533],
+      [1357, 1636, 1111, 1542, 1511, 1563, 1647, 1347, 1281, 2048, 727, 719, 0, 449, 2957, 2131, 2782, 1876, 2661, 3268, 1161, 2249],
+      [1257, 1548, 976, 1899, 1841, 1873, 1959, 1728, 1608, 2445, 1025, 1006, 449, 0, 3352, 2446, 2835, 2152, 2316, 2867, 1267, 2507],
+      [4123, 4337, 3955, 2903, 3049, 3160, 3180, 2737, 3022, 2658, 3060, 3086, 2957, 3352, 0, 3333, 4931, 3444, 5611, 6218, 3641, 3718],
+      [1936, 1924, 2028, 632, 621, 573, 488, 868, 849, 696, 1424, 1442, 2131, 2446, 3333, 0, 1728, 374, 3524, 4354, 1399, 401],
+      [1647, 1392, 1919, 2029, 1883, 1771, 1753, 2201, 1939, 2408, 2161, 2151, 2782, 2835, 4931, 1728, 0, 1505, 2543, 3371, 1621, 1335],
+      [1564, 1551, 1665, 558, 452, 352, 291, 775, 628, 928, 1151, 1163, 1876, 2152, 3444, 374, 1505, 0, 3152, 3980, 1039, 381],
+      [1655, 1602, 1714, 3326, 3178, 3123, 3179, 3311, 3025, 3943, 2670, 2640, 2661, 2316, 5611, 3524, 2543, 3152, 0, 848, 2243, 3300],
+      [2449, 2430, 2459, 4119, 3977, 3929, 3990, 4082, 3809, 4741, 3402, 3371, 3268, 2867, 6218, 4354, 3371, 3980, 848, 0, 3034, 4142],
+      [588, 714, 629, 1086, 944, 903, 972, 1075, 783, 1707, 602, 582, 1161, 1267, 3641, 1399, 1621, 1039, 2243, 3034, 0, 1330],
+      [1794, 1724, 1937, 902, 823, 730, 660, 1133, 1009, 1097, 1523, 1533, 2249, 2507, 3718, 401, 1335, 381, 3300, 4142, 1330, 0]
+    ]
+  },
+  "walkStepFree": {
+    "ids": [
+      "brandenburg-gate",
+      "reichstag",
+      "holocaust-memorial",
+      "berlin-cathedral",
+      "altes-museum",
+      "neues-museum",
+      "alte-nationalgalerie",
+      "humboldt-forum",
+      "german-historical-museum",
+      "tv-tower",
+      "gendarmenmarkt",
+      "konzerthaus",
+      "checkpoint-charlie",
+      "topography-of-terror",
+      "markthalle-neun",
+      "hackesche-hoefe",
+      "natural-history-museum",
+      "monbijou-park",
+      "tiergarten",
+      "cafe-am-neuen-see",
+      "cafe-einstein-unter-den-linden",
+      "claerchens-ballhaus"
+    ],
+    "seconds": [
+      [0, 291, 284, 1673, 1529, 1481, 1543, 1658, 1370, 2293, 1072, 1044, 1357, 1257, 4123, 1936, 1647, 1564, 1655, 2449, 588, 1794],
+      [291, 0, 573, 1755, 1599, 1534, 1585, 1777, 1476, 2359, 1277, 1251, 1636, 1548, 4337, 1924, 1392, 1551, 1602, 2430, 714, 1724],
+      [284, 573, 0, 1681, 1552, 1523, 1596, 1625, 1363, 2304, 956, 926, 1111, 976, 3955, 2028, 1919, 1665, 1714, 2459, 629, 1937],
+      [1673, 1755, 1681, 0, 163, 264, 278, 238, 322, 624, 883, 907, 1542, 1899, 2903, 632, 2029, 558, 3326, 4119, 1086, 902],
+      [1529, 1599, 1552, 163, 0, 112, 163, 328, 233, 765, 816, 836, 1511, 1841, 3049, 621, 1883, 452, 3178, 3977, 944, 823],
+      [1481, 1534, 1523, 264, 112, 0, 85, 439, 286, 825, 851, 869, 1563, 1873, 3160, 573, 1771, 352, 3123, 3929, 903, 730],
+      [1543, 1585, 1596, 278, 163, 85, 0, 485, 368, 781, 937, 954, 1647, 1959, 3180, 488, 1753, 291, 3179, 3990, 972, 660],
+      [1658, 1777, 1625, 238, 328, 439, 485, 0, 307, 724, 743, 771, 1347, 1728, 2737, 868, 2201, 775, 3311, 4082, 1075, 1133],
+      [1370, 1476, 1363, 322, 233, 286, 368, 307, 0, 942, 583, 604, 1281, 1608, 3022, 849, 1939, 628, 3025, 3809, 783, 1009],
+      [2293, 2359, 2304, 624, 765, 825, 781, 724, 942, 0, 1466, 1493, 2048, 2445, 2658, 696, 2408, 928, 3943, 4741, 1707, 1097],
+      [1072, 1277, 956, 883, 816, 851, 937, 743, 583, 1466, 0, 31, 727, 1025, 3060, 1424, 2161, 1151, 2670, 3402, 602, 1523],
+      [1044, 1251, 926, 907, 836, 869, 954, 771, 604, 1493, 31, 0, 719, 1006, 3086, 1442, 2151, 1163, 2640, 3371, 582, 1533],
+      [1357, 1636, 1111, 1542, 1511, 1563, 1647, 1347, 1281, 2048, 727, 719, 0, 449, 2957, 2131, 2782, 1876, 2661, 3268, 1161, 2249],
+      [1257, 1548, 976, 1899, 1841, 1873, 1959, 1728, 1608, 2445, 1025, 1006, 449, 0, 3352, 2446, 2835, 2152, 2316, 2867, 1267, 2507],
+      [4123, 4337, 3955, 2903, 3049, 3160, 3180, 2737, 3022, 2658, 3060, 3086, 2957, 3352, 0, 3333, 4931, 3444, 5611, 6218, 3641, 3718],
+      [1936, 1924, 2028, 632, 621, 573, 488, 868, 849, 696, 1424, 1442, 2131, 2446, 3333, 0, 1728, 374, 3524, 4354, 1399, 401],
+      [1647, 1392, 1919, 2029, 1883, 1771, 1753, 2201, 1939, 2408, 2161, 2151, 2782, 2835, 4931, 1728, 0, 1505, 2543, 3371, 1621, 1335],
+      [1564, 1551, 1665, 558, 452, 352, 291, 775, 628, 928, 1151, 1163, 1876, 2152, 3444, 374, 1505, 0, 3152, 3980, 1039, 381],
+      [1655, 1602, 1714, 3326, 3178, 3123, 3179, 3311, 3025, 3943, 2670, 2640, 2661, 2316, 5611, 3524, 2543, 3152, 0, 848, 2243, 3300],
+      [2449, 2430, 2459, 4119, 3977, 3929, 3990, 4082, 3809, 4741, 3402, 3371, 3268, 2867, 6218, 4354, 3371, 3980, 848, 0, 3034, 4142],
+      [588, 714, 629, 1086, 944, 903, 972, 1075, 783, 1707, 602, 582, 1161, 1267, 3641, 1399, 1621, 1039, 2243, 3034, 0, 1330],
+      [1794, 1724, 1937, 902, 823, 730, 660, 1133, 1009, 1097, 1523, 1533, 2249, 2507, 3718, 401, 1335, 381, 3300, 4142, 1330, 0]
+    ]
+  }
+}

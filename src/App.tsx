@@ -1,4 +1,5 @@
 import { useState } from "react";
+import berlin from "../data/cities/berlin.json";
 import prague from "../data/cities/prague.json";
 import { parseCity } from "./catalogue";
 import {
@@ -15,7 +16,7 @@ import { AppShell } from "./ui/AppShell";
 import { Onboarding } from "./ui/Onboarding";
 import { PlanView } from "./ui/PlanView";
 
-const city = parseCity(prague);
+const CITIES = [parseCity(prague), parseCity(berlin)];
 
 function todayIn(timeZone: string): string {
   // en-CA formats dates as YYYY-MM-DD.
@@ -34,6 +35,7 @@ export function App() {
   const [editing, setEditing] = useState(false);
   const [saveFailed, setSaveFailed] = useState(false);
   const [planVersion, setPlanVersion] = useState(0);
+  const [city, setCity] = useState(CITIES[0]!);
 
   const store = (next: Profile) => {
     setProfile(next);
@@ -59,23 +61,40 @@ export function App() {
           onCancel={profile ? () => setEditing(false) : undefined}
         />
       ) : (
-        <PlanView
-          // A new key after editing resets the plan to the new interests; ratings alone keep it.
-          key={planVersion}
-          city={city}
-          profile={profile}
-          today={todayIn(city.timezone)}
-          onRate={(placeId, stars: Stars) => {
-            const place = city.places.find((p) => p.id === placeId)!;
-            store(rate(profile, city.id, place, stars));
-          }}
-          onEdit={() => setEditing(true)}
-          onDelete={() => {
-            deleteProfile();
-            setProfile(null);
-            setSaveFailed(false);
-          }}
-        />
+        <>
+          <div role="group" aria-label="City" className="mb-4 grid grid-cols-2 gap-2">
+            {CITIES.map((c) => (
+              <button
+                key={c.id}
+                type="button"
+                aria-pressed={c.id === city.id}
+                onClick={() => setCity(c)}
+                className={`min-h-11 rounded-xl border px-4 font-medium ${
+                  c.id === city.id ? "border-brand bg-brand text-white" : "border-stone-300 bg-white text-stone-800"
+                }`}
+              >
+                {c.name}
+              </button>
+            ))}
+          </div>
+          <PlanView
+            // A new key after editing or switching city resets the plan; ratings alone keep it.
+            key={`${city.id}-${planVersion}`}
+            city={city}
+            profile={profile}
+            today={todayIn(city.timezone)}
+            onRate={(placeId, stars: Stars) => {
+              const place = city.places.find((p) => p.id === placeId)!;
+              store(rate(profile, city.id, place, stars));
+            }}
+            onEdit={() => setEditing(true)}
+            onDelete={() => {
+              deleteProfile();
+              setProfile(null);
+              setSaveFailed(false);
+            }}
+          />
+        </>
       )}
     </AppShell>
   );

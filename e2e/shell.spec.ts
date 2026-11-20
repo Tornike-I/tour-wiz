@@ -175,3 +175,16 @@ test("keeps the city centre when the traveller is elsewhere", async ({ page, con
   await expect(page.getByText("You're not in Prague right now, so the day starts at the city centre.")).toBeVisible();
   await expect(page.getByRole("button", { name: "Start from my location" })).toBeVisible();
 });
+
+test("switches the plan to Berlin with the same profile", async ({ page }) => {
+  await onboard(page, ["History", "Viewpoints"]);
+  await page.getByRole("group", { name: "City" }).getByRole("button", { name: "Berlin" }).click();
+
+  await expect(page.getByRole("heading", { name: "Your day in Berlin" })).toBeVisible();
+  await expect(page.getByRole("listitem").filter({ hasText: "Matches: history" }).first()).toBeVisible();
+  await expect.poll(() => routeCalls.some((c) => (c as { to: number[] }).to[0]! > 52)).toBe(true);
+  await expectPhoneFriendly(page);
+
+  await page.getByRole("button", { name: "Prague" }).click();
+  await expect(page.getByRole("heading", { name: "Your day in Prague" })).toBeVisible();
+});
