@@ -18,7 +18,7 @@ There is no time to add crowd counts (#10) before the demo. Present the quiet-ho
 
 1. Charge it. Turn on Do Not Disturb. Set the brightness to maximum.
 2. Connect it to the projector (cable or screen mirroring) and check that the picture appears.
-3. Open the production URL in the normal browser, **not** a private tab, because private tabs cannot save the profile.
+3. Open the production URL, https://tour-wiz.vercel.app, in the normal browser, **not** a private tab, because private tabs cannot save the profile.
 4. On the plan screen, tap **Delete my data from this phone**, then **Yes, delete**, so the demo starts at onboarding.
 5. Keep a second phone or a laptop open on the same URL as a spare.
 
