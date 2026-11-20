@@ -158,8 +158,7 @@ async function orsMatrix(
   return json.durations;
 }
 
-// The public ORS server refuses wheelchair matrices with many long trips ("visited nodes" limit) but answers a
-// two-place matrix. It uses the matrix quota, so the live app's directions quota is left alone.
+// The public ORS server refuses wheelchair matrices with long trips ("visited nodes" limit) but answers two-place ones.
 async function orsWheelchairPairs(locations: [number, number][], key: string): Promise<(number | null)[][]> {
   const rows: (number | null)[][] = locations.map(() => locations.map(() => 0));
   for (let i = 0; i < locations.length; i++) {
