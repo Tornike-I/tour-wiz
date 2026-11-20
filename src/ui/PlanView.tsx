@@ -1,5 +1,6 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import type { City } from "../catalogue";
+import { RoutePanel } from "../map/RoutePanel";
 import { plan } from "../planner";
 import { ratingKey, type Profile, type Stars } from "../profile";
 import { CROWD_LABELS } from "./labels";
@@ -23,12 +24,23 @@ export function PlanView({ city, profile, today, onRate, onEdit, onDelete }: Pro
   // The plan keeps the profile it was made with, so rating a stop does not reshuffle the day under you.
   const [planProfile, setPlanProfile] = useState(profile);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [selected, setSelected] = useState(0);
+  const mapRef = useRef<HTMLDivElement>(null);
 
   const day = useMemo(
     () => (date && start < end ? plan(city, planProfile, { date, start, end }) : undefined),
     [city, planProfile, date, start, end],
   );
   const places = useMemo(() => new Map(city.places.map((p) => [p.id, p])), [city]);
+  const mapStops = useMemo(
+    () => (day?.stops ?? []).map((s) => ({ name: s.name, location: places.get(s.placeId)!.location, walkMinutes: s.walkMinutes })),
+    [day, places],
+  );
+  const leg = Math.min(selected, Math.max(mapStops.length - 1, 0));
+  const showLeg = (i: number) => {
+    setSelected(i);
+    mapRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
   const ratingsChanged = profile !== planProfile;
 
   return (
@@ -77,6 +89,9 @@ export function PlanView({ city, profile, today, onRate, onEdit, onDelete }: Pro
           <p className="text-stone-700">
             {day.stops.length} stops · {day.walkedKm} km walking · {Math.round(day.quietShare * 100)}% at quiet times
           </p>
+          <div ref={mapRef} className="scroll-mt-4">
+            <RoutePanel start={city.center} stops={mapStops} selected={leg} onSelect={setSelected} stepFree={planProfile.stepFree} />
+          </div>
           <ol className="space-y-3">
             {day.stops.map((stop, i) => {
               const place = places.get(stop.placeId)!;
@@ -106,6 +121,14 @@ export function PlanView({ city, profile, today, onRate, onEdit, onDelete }: Pro
                       <li key={r}>{r}</li>
                     ))}
                   </ul>
+                  <button
+                    type="button"
+                    onClick={() => showLeg(i)}
+                    aria-pressed={leg === i}
+                    className="min-h-11 rounded-lg border border-stone-300 bg-white px-3 text-sm font-medium aria-pressed:border-brand aria-pressed:text-brand"
+                  >
+                    {leg === i ? "On the map" : "Show route here"}
+                  </button>
                   {place.url && (
                     <a
                       href={place.url}

@@ -61,7 +61,7 @@ Keep this list accurate:
 ```bash
 npm install
 npx playwright install chromium webkit   # once, for npm run e2e
-npm run dev          # local dev server
+npm run dev          # local dev server, also serves /api/route (ORS_API_KEY in .env)
 npm run typecheck    # tsc
 npm test             # Vitest
 npm run e2e          # Playwright, Android and iPhone profiles, against the production build

@@ -40,7 +40,7 @@ Planning runs entirely on the phone from the catalogue file. The only network ca
 | Layer | Choice | Why |
 |---|---|---|
 | App | React + TypeScript + Vite, Tailwind CSS | Works in any phone browser; one language for app, planner and scripts |
-| Map | Leaflet (`react-leaflet`), OSM raster tiles | Simplest OSM map; enough for 50 markers and a route line |
+| Map | Leaflet 1.9 (BSD-2), used directly, OSM raster tiles | Simplest OSM map. `react-leaflet` is skipped: its Hippocratic licence adds conditions, and a 100-line wrapper does the job |
 | Routing | OpenRouteService directions: `foot-walking`, `wheelchair` | Stair avoidance and route weightings are built in |
 | API proxy | One serverless function on Vercel or Netlify | Keeps the ORS key out of the browser; caches responses |
 | Catalogue | One JSON file per city, validated with Zod | The schema is the contract that makes "any city" true |
@@ -161,12 +161,17 @@ Success metric support: the plan reports `quietShare`, the share of its stops at
 
 ## 4 · Map and route slider
 
-- Leaflet map with numbered stop markers and the route of the selected leg.
-- The slider (fastest ↔ scenic) maps to an ORS weighting from 0 to 1:
+Code: `src/map/` (`DayMap`, `RoutePanel`, `fetchRoute`), shown on the plan screen above the stops.
+
+- Leaflet map with a start dot, numbered stop markers (44 px tap targets) and the route of the selected leg. Tap a marker, the ← → buttons or "Show route here" on a stop to pick the leg.
+- The slider (fastest ↔ scenic) has five positions, 0 to 1 in steps of 0.25, so the proxy cache gets hits. It maps to ORS weightings:
   - 0: plain `foot-walking`, shortest time.
-  - > 0: `options.profile_params.weightings.green = value` (prefers parks and greenery), optionally `quiet` too.
-- Legs are fetched one at a time when shown, through the proxy.
-- Walking times in the plan come from the precomputed matrix (fastest route). A scenic leg can be longer than planned; show the extra minutes next to the slider.
+  - > 0: `options.profile_params.weightings` with `green` and `quiet` set to the slider value.
+- Legs are fetched one at a time when shown, through the proxy, 250 ms after the slider stops moving.
+- Walking times in the plan come from the precomputed matrix (fastest route). Next to the slider: the leg's minutes and km, and "about N min longer than planned" for a scenic leg.
+- If the proxy fails or has no key, the leg is a dashed straight line with "Route not available right now".
+- Step-free mode disables the slider: ORS has `green` and `quiet` only on the foot profiles, so step-free legs are always the plain `wheelchair` route.
+- OSM attribution stays visible in the map corner (no Leaflet prefix).
 
 ## 5 · Basic accessibility
 
@@ -184,10 +189,14 @@ Success metric support: the plan reports `quietShare`, the share of its stops at
 { "from": [50.087, 14.421], "to": [50.090, 14.400], "scenic": 0.6, "stepFree": false }
 ```
 
-- Picks the profile (`foot-walking` or `wheelchair`), adds weightings, and calls ORS with the key from an environment variable.
-- Returns GeoJSON, a distance and a duration.
-- Caches by rounded request, so repeated demo runs don't use up the free quota.
-- Logs no coordinates.
+Code: `api/route.ts`, a Vercel function. `npm run dev` serves the same handler through a Vite plugin, with `ORS_API_KEY` from `.env`.
+
+- Refuses points outside Prague's bounding box (49.9–50.2 N, 14.2–14.75 E), so the key can't be used for anything else. Widen it when a city is added.
+- Rounds points to 5 decimals and `scenic` to quarter steps.
+- Picks the profile (`foot-walking` or `wheelchair`), adds weightings for scenic walking legs, and calls ORS with the key from `ORS_API_KEY`.
+- Returns `{ path: [lat, lon][], distanceMetres, durationSeconds }`; 400 for bad input, 503 without a key, 502 when ORS fails.
+- Caches up to 500 rounded requests in memory. A Vercel instance keeps its cache only while it stays warm.
+- Logs no coordinates, only the ORS status code on failure.
 
 ## Privacy
 
