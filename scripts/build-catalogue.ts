@@ -20,7 +20,7 @@ import {
 
 // One endpoint only: mirrors lag behind and give different results for the same ids.
 const OVERPASS = "https://overpass-api.de/api/interpreter";
-const ORS_MATRIX = "https://api.openrouteservice.org/v2/matrix";
+const ORS_MATRIX = "https://api.heigit.org/v2/matrix";
 const USER_AGENT = "tour-wiz-catalogue/0.1 (hackathon project)";
 
 const args = process.argv.slice(2);
