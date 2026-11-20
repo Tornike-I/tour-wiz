@@ -6,7 +6,7 @@ export type { LatLon, RouteRequest, RouteResponse };
 
 // Prague and its surroundings. Requests outside are refused, so the key cannot be used for anything else.
 const BOUNDS = { south: 49.9, north: 50.2, west: 14.2, east: 14.75 };
-const ORS_DIRECTIONS = "https://api.openrouteservice.org/v2/directions";
+const ORS_DIRECTIONS = "https://api.heigit.org/v2/directions";
 const cache = new Map<string, RouteResponse>();
 const CACHE_LIMIT = 500;
 
