@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import prague from "../../data/cities/prague.json";
-import { parseCity, type City, type Level, type Place } from "../catalogue";
+import { parseCity, type City, type Level, type Place, type RestPoint } from "../catalogue";
 import { createProfile, rate, type OnboardingAnswers } from "../profile";
 import { plan } from ".";
 
@@ -27,7 +27,7 @@ function place(id: string, overrides: Partial<Place> = {}): Place {
 }
 
 // Every pair of places is `walkSeconds` apart.
-function city(places: Place[], walkSeconds = 600): City {
+function city(places: Place[], walkSeconds = 600, restPoints: RestPoint[] = []): City {
   const ids = places.map((p) => p.id);
   const seconds = ids.map((a) => ids.map((b) => (a === b ? 0 : walkSeconds)));
   return {
@@ -38,7 +38,7 @@ function city(places: Place[], walkSeconds = 600): City {
     center: [50.087, 14.42],
     walkSource: "estimate",
     places,
-    restPoints: [],
+    restPoints,
     walk: { ids, seconds },
     walkStepFree: { ids, seconds },
   };
@@ -140,6 +140,48 @@ describe("plan", () => {
     expect(stops.map((s) => s.placeId)).toContain("tea");
   });
 
+  describe("rest stops", () => {
+    // Two places 1.4 km apart on a north-south line; the leg takes 20 minutes.
+    const north = place("north", { location: [50.1, 14.42], openingHours: "24/7" });
+    const south = place("south", { location: [50.0874, 14.42], openingHours: "24/7" });
+    const onTheWay: RestPoint = { location: [50.094, 14.4202], kind: "bench" };
+    const farAway: RestPoint = { location: [50.094, 14.45], kind: "bench" };
+    const cafe: RestPoint = { location: [50.094, 14.4201], kind: "cafe" };
+    const walk = { ...day, from: [50.1, 14.42] as [number, number] };
+
+    it("adds a rest on a leg longer than the traveller's limit, at the point with the least detour", () => {
+      const c = city([south], 1200, [farAway, onTheWay]);
+      const stop = plan(c, profile({ restEveryMinutes: 15 }), walk).stops[0]!;
+      expect(stop.rest).toEqual({ kind: "bench", location: onTheWay.location, minutes: 10 });
+      expect(stop.reasons).toContain("Rest on the way at a bench (10 min)");
+    });
+
+    it("rests near where the limit runs out, not right at the start", () => {
+      const atStart: RestPoint = { location: [50.0999, 14.4201], kind: "bench" };
+      const c = city([south], 1200, [atStart, onTheWay]);
+      expect(plan(c, profile({ restEveryMinutes: 15 }), walk).stops[0]!.rest?.location).toEqual(onTheWay.location);
+    });
+
+    it("counts the rest in the arrival time", () => {
+      const c = city([south], 1200, [onTheWay]);
+      const without = plan(c, profile(), walk).stops[0]!;
+      const withRest = plan(c, profile({ restEveryMinutes: 15 }), walk).stops[0]!;
+      expect(toMinutes(withRest.arrive) - toMinutes(without.arrive)).toBeGreaterThanOrEqual(10);
+    });
+
+    it("adds no rest on short legs or when the traveller needs none", () => {
+      const c = city([north, south], 600, [onTheWay]);
+      expect(plan(c, profile({ restEveryMinutes: 30 }), walk).stops.every((s) => !s.rest)).toBe(true);
+      expect(plan(city([south], 1200, [onTheWay]), profile(), walk).stops[0]!.rest).toBeUndefined();
+    });
+
+    it("rests a step-free traveller only at benches", () => {
+      const c = city([south], 1200, [cafe, farAway]);
+      expect(plan(c, profile({ restEveryMinutes: 15, stepFree: true }), walk).stops[0]!.rest?.kind).toBe("bench");
+      expect(plan(c, profile({ restEveryMinutes: 15 }), walk).stops[0]!.rest?.kind).toBe("cafe");
+    });
+  });
+
   it("plans a full Prague day from the real catalogue", () => {
     const p = profile({ interests: ["castle", "art", "viewpoint", "tea-house"] });
     const result = plan(parseCity(prague), p, day);
@@ -148,3 +190,8 @@ describe("plan", () => {
     expect(result.walkedKm).toBeLessThanOrEqual(p.maxWalkKmPerDay);
   });
 });
+
+function toMinutes(clock: string): number {
+  const [h, m] = clock.split(":").map(Number) as [number, number];
+  return h * 60 + m;
+}
