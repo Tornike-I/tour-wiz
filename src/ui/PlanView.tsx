@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react";
-import type { City } from "../catalogue";
+import { isInCity, type City } from "../catalogue";
 import { RoutePanel } from "../map/RoutePanel";
 import { plan } from "../planner";
 import { ratingKey, type Profile, type Stars } from "../profile";
@@ -25,11 +25,42 @@ export function PlanView({ city, profile, today, onRate, onEdit, onDelete }: Pro
   const [planProfile, setPlanProfile] = useState(profile);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [selected, setSelected] = useState(0);
+  // Held only in memory for this plan: never saved, logged or sent anywhere except one leg to the route proxy.
+  const [from, setFrom] = useState<[number, number]>();
+  const [locating, setLocating] = useState(false);
+  const [locationNote, setLocationNote] = useState<string>();
   const mapRef = useRef<HTMLDivElement>(null);
 
+  const locate = () => {
+    const centre = "so the day starts at the city centre.";
+    if (!("geolocation" in navigator)) {
+      setLocationNote(`This browser can't share your location, ${centre}`);
+      return;
+    }
+    setLocating(true);
+    setLocationNote(undefined);
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        setLocating(false);
+        const point: [number, number] = [coords.latitude, coords.longitude];
+        if (!isInCity(city, point)) {
+          setLocationNote(`You're not in ${city.name} right now, ${centre}`);
+          return;
+        }
+        setFrom(point);
+        setSelected(0);
+      },
+      () => {
+        setLocating(false);
+        setLocationNote(`We couldn't get your location, ${centre}`);
+      },
+      { enableHighAccuracy: true, timeout: 10_000, maximumAge: 60_000 },
+    );
+  };
+
   const day = useMemo(
-    () => (date && start < end ? plan(city, planProfile, { date, start, end }) : undefined),
-    [city, planProfile, date, start, end],
+    () => (date && start < end ? plan(city, planProfile, { date, start, end, from }) : undefined),
+    [city, planProfile, date, start, end, from],
   );
   const places = useMemo(() => new Map(city.places.map((p) => [p.id, p])), [city]);
   const mapStops = useMemo(
@@ -69,6 +100,32 @@ export function PlanView({ city, profile, today, onRate, onEdit, onDelete }: Pro
             <input type="time" className={inputClass} value={end} onChange={(e) => e.target.value && setEnd(e.target.value)} />
           </label>
         </div>
+        <div className="space-y-2">
+          {from ? (
+            <div className="flex items-center justify-between gap-2 rounded-lg bg-white p-3 text-sm shadow-sm">
+              <span className="font-medium">Starting from your location</span>
+              <button
+                type="button"
+                onClick={() => setFrom(undefined)}
+                className="min-h-11 rounded-lg border border-stone-300 bg-white px-3 font-medium"
+              >
+                Use the city centre
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={locate}
+              disabled={locating}
+              className="min-h-11 w-full rounded-xl border border-stone-300 bg-white px-4 font-medium disabled:opacity-60"
+            >
+              {locating ? "Finding you…" : "Start from my location"}
+            </button>
+          )}
+          <p role="status" className="text-sm text-stone-600">
+            {locationNote ?? "Your location is used once for this plan and never saved."}
+          </p>
+        </div>
         {planProfile.stepFree && (
           <p className="rounded-lg bg-white p-3 text-sm text-stone-700 shadow-sm">
             Step-free plan: places with steps, or with no access information in OpenStreetMap, are left out. Rests are on
@@ -102,7 +159,7 @@ export function PlanView({ city, profile, today, onRate, onEdit, onDelete }: Pro
             {day.stops.length} stops · {day.walkedKm} km walking · {Math.round(day.quietShare * 100)}% at quiet times
           </p>
           <div ref={mapRef} className="scroll-mt-4">
-            <RoutePanel start={city.center} stops={mapStops} selected={leg} onSelect={setSelected} stepFree={planProfile.stepFree} />
+            <RoutePanel start={from ?? city.center} stops={mapStops} selected={leg} onSelect={setSelected} stepFree={planProfile.stepFree} />
           </div>
           <ol className="space-y-3">
             {day.stops.map((stop, i) => {
