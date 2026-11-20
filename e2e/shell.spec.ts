@@ -149,6 +149,33 @@ test("adds rest breaks and keeps to the walking limit", async ({ page }) => {
   await expect(page.getByRole("button", { name: "4 km", exact: true })).toHaveAttribute("aria-pressed", "true");
 });
 
+test("starts the day from the traveller's location inside the city", async ({ page, context }) => {
+  const wenceslasSquare = { latitude: 50.0812, longitude: 14.428 };
+  await context.grantPermissions(["geolocation"]);
+  await context.setGeolocation(wenceslasSquare);
+  await onboard(page);
+
+  await page.getByRole("button", { name: "Start from my location" }).click();
+  await expect(page.getByText("Starting from your location")).toBeVisible();
+  await expect
+    .poll(() => routeCalls.some((c) => JSON.stringify((c as { from: number[] }).from) === "[50.0812,14.428]"))
+    .toBe(true);
+  await expectPhoneFriendly(page);
+
+  await page.getByRole("button", { name: "Use the city centre" }).click();
+  await expect(page.getByRole("button", { name: "Start from my location" })).toBeVisible();
+});
+
+test("keeps the city centre when the traveller is elsewhere", async ({ page, context }) => {
+  await context.grantPermissions(["geolocation"]);
+  await context.setGeolocation({ latitude: 49.1951, longitude: 16.6068 });
+  await onboard(page);
+
+  await page.getByRole("button", { name: "Start from my location" }).click();
+  await expect(page.getByText("You're not in Prague right now, so the day starts at the city centre.")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Start from my location" })).toBeVisible();
+});
+
 test("switches the plan to Berlin with the same profile", async ({ page }) => {
   await onboard(page, ["History", "Viewpoints"]);
   await page.getByRole("group", { name: "City" }).getByRole("button", { name: "Berlin" }).click();
