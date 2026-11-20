@@ -129,8 +129,11 @@ type Profile = {
   stepFree: boolean;
   restEveryMinutes?: number;
   ratings: Record<string, 1 | 2 | 3 | 4 | 5>;  // "prague/<placeId>"
+  group?: { name: string; interests: Tag[] }[];  // add-on 1: up to 5 people travelling with the owner
 };
 ```
+
+**Group and family profiles (add-on 1).** Onboarding can add up to 5 people, each with a name and at least one interest, all on the owner's phone. The planner scores places with `groupInterests`: each tag's weight is averaged over the owner and every member (a member's picked tag counts as 1), so a place more of the group likes ranks higher, and a place only one member likes can still be planned. Each stop's first reason names who it is for, such as `Matches: art (Ana), history (you)`. Pace and access needs stay one setting for the whole group, set for whoever needs them most. Ratings still move only the owner's weights. The field is optional, so profiles saved before it still load.
 
 - Onboarding (about 30 seconds) picks interests, pace and access needs. Each picked interest starts at weight 1.
 - A rating moves the weights of that place's tags by `0.2 × (stars − 3) / 2`: 5 stars +0.2, 4 stars +0.1, 3 stars nothing, 2 stars −0.1, 1 star −0.2, kept within 0..1. Tags the traveller never picked start at 0, so a high rating can add a new interest. Rating a place again replaces the earlier rating's effect. Since tags are shared, this carries over to other cities.
@@ -138,7 +141,7 @@ type Profile = {
 
 Pace sets the walking-time factor applied to matrix times and the default daily walking cap: relaxed ×1.25 and 6 km, normal ×1 and 10 km, brisk ×0.85 and 14 km.
 
-Code: `src/profile/` (`createProfile`, `rate`, `walkTimeFactor`, `loadProfile` / `saveProfile` / `deleteProfile`).
+Code: `src/profile/` (`createProfile`, `rate`, `groupInterests`, `walkTimeFactor`, `loadProfile` / `saveProfile` / `deleteProfile`).
 
 ## 3 · Crowd-aware day planner
 
@@ -205,7 +208,7 @@ Code: `api/route.ts`, a Vercel function. `npm run dev` serves the same handler t
 
 | Data | Where it lives |
 |---|---|
-| Interests, ratings, access needs | `localStorage` on the phone only |
+| Interests, ratings, access needs, group members' names and interests | `localStorage` on the phone only |
 | Current location | Read once when the traveller taps "Start from my location"; kept in memory for that plan, never stored or logged. The first leg's start goes to `/api/route` like any other leg |
 | Route requests | Start and end of one leg go to the proxy and ORS, nothing else |
 
