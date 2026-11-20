@@ -50,6 +50,30 @@ const profile = (answers: Partial<OnboardingAnswers> = {}) =>
 // 2026-11-18 is a Wednesday, 2026-11-21 a Saturday.
 const day = { date: "2026-11-18", start: "09:00", end: "18:00" };
 
+describe("plan for a group", () => {
+  const art = place("gallery", { tags: ["art"] });
+  const tea = place("tea-room", { tags: ["tea-house"] });
+  const shared = place("riverside-gallery", { tags: ["art", "tea-house"] });
+
+  it("plans places only someone else in the group likes, and says who each is for", () => {
+    const stops = plan(city([art, tea]), profile({ group: [{ name: "Ana", interests: ["tea-house"] }] }), day).stops;
+    expect(stops.map((s) => s.placeId).sort()).toEqual(["gallery", "tea-room"]);
+    expect(stops.find((s) => s.placeId === "tea-room")!.reasons[0]).toBe("Matches: tea-house (Ana)");
+    expect(stops.find((s) => s.placeId === "gallery")!.reasons[0]).toBe("Matches: art (you)");
+  });
+
+  it("puts a place the whole group likes first", () => {
+    const group = [{ name: "Ana", interests: ["tea-house" as const] }];
+    const stops = plan(city([art, tea, shared]), profile({ group }), { ...day, end: "10:15" }).stops;
+    expect(stops[0]!.placeId).toBe("riverside-gallery");
+    expect(stops[0]!.reasons[0]).toBe("Matches: art (you), tea-house (Ana)");
+  });
+
+  it("keeps the plain reason for a traveller on their own", () => {
+    expect(plan(city([art]), profile(), day).stops[0]!.reasons[0]).toBe("Matches: art");
+  });
+});
+
 describe("plan", () => {
   it("returns an empty plan for a missing date or time instead of hanging", () => {
     const c = city([place("a")]);

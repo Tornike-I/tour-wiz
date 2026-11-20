@@ -6,7 +6,9 @@ import { ratingKey, type Profile, type Stars } from "../profile";
 import { CROWD_LABELS } from "./labels";
 
 const crowdBadge = ["bg-emerald-100 text-emerald-900", "bg-emerald-100 text-emerald-900", "bg-amber-100 text-amber-900", "bg-orange-100 text-orange-900", "bg-red-100 text-red-900"];
-const inputClass = "min-h-11 w-full rounded-lg border border-stone-300 bg-white px-3 text-base";
+const listNames = (names: string[]) =>
+  names.length < 2 ? names.join("") : `${names.slice(0, -1).join(", ")} and ${names.at(-1)}`;
+const inputClass ="min-h-11 w-full rounded-lg border border-stone-300 bg-white px-3 text-base";
 
 type Props = {
   city: City;
@@ -55,6 +57,9 @@ export function PlanView({ city, profile, today, onRate, onEdit, onDelete }: Pro
         <h2 id="plan-heading" className="text-2xl font-semibold">
           Your day in {city.name}
         </h2>
+        {planProfile.group?.length ? (
+          <p className="text-stone-700">Planned for {listNames(["you", ...planProfile.group.map((m) => m.name)])}.</p>
+        ) : null}
         <div className="grid grid-cols-2 gap-2">
           <label className="col-span-2 space-y-1 text-sm font-medium">
             <span>Date</span>

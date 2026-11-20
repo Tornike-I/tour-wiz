@@ -3,6 +3,7 @@ import {
   PROFILE_KEY,
   createProfile,
   deleteProfile,
+  groupInterests,
   loadProfile,
   rate,
   saveProfile,
@@ -39,6 +40,33 @@ describe("createProfile", () => {
   it("slows walking for a relaxed pace and speeds it up for a brisk one", () => {
     expect(walkTimeFactor({ pace: "relaxed" })).toBeGreaterThan(1);
     expect(walkTimeFactor({ pace: "brisk" })).toBeLessThan(1);
+  });
+});
+
+describe("groupInterests", () => {
+  it("averages each interest over everyone in the group", () => {
+    const p = createProfile({
+      interests: ["art", "tea-house"],
+      pace: "normal",
+      stepFree: false,
+      group: [
+        { name: "Ana", interests: ["tea-house"] },
+        { name: "Ben", interests: ["beer"] },
+      ],
+    });
+    expect(groupInterests(p)).toEqual({ art: 0.333, "tea-house": 0.667, beer: 0.333 });
+  });
+
+  it("is the traveller's own interests without a group", () => {
+    const p = createProfile({ interests: ["art"], pace: "normal", stepFree: false });
+    expect(groupInterests(p)).toBe(p.interests);
+    expect(p.group).toBeUndefined();
+  });
+
+  it("rejects a group member with no interests", () => {
+    expect(() =>
+      createProfile({ interests: ["art"], pace: "normal", stepFree: false, group: [{ name: "Ana", interests: [] }] }),
+    ).toThrow();
   });
 });
 

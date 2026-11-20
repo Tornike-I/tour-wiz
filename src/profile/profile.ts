@@ -10,6 +10,15 @@ export const PACES = {
 export type Pace = keyof typeof PACES;
 export type Stars = 1 | 2 | 3 | 4 | 5;
 
+export const MAX_GROUP = 5;
+
+const memberSchema = z.object({
+  name: z.string().trim().min(1).max(30),
+  interests: z.array(z.enum(TAGS)).min(1),
+});
+
+export type GroupMember = z.infer<typeof memberSchema>;
+
 const stars = z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4), z.literal(5)]);
 
 export const profileSchema = z.object({
@@ -20,6 +29,7 @@ export const profileSchema = z.object({
   stepFree: z.boolean(),
   restEveryMinutes: z.number().int().positive().optional(),
   ratings: z.record(z.string(), stars), // key: "<cityId>/<placeId>"
+  group: z.array(memberSchema).max(MAX_GROUP).optional(), // people travelling with the profile owner
 });
 
 export type Profile = z.infer<typeof profileSchema>;
@@ -30,6 +40,7 @@ export type OnboardingAnswers = {
   stepFree: boolean;
   maxWalkKmPerDay?: number;
   restEveryMinutes?: number;
+  group?: GroupMember[];
 };
 
 export function createProfile(answers: OnboardingAnswers): Profile {
@@ -41,6 +52,7 @@ export function createProfile(answers: OnboardingAnswers): Profile {
     stepFree: answers.stepFree,
     ...(answers.restEveryMinutes ? { restEveryMinutes: answers.restEveryMinutes } : {}),
     ratings: {},
+    ...(answers.group?.length ? { group: answers.group } : {}),
   });
 }
 
@@ -70,6 +82,18 @@ export function rate(
     interests[tag] = round(Math.min(1, Math.max(0, (interests[tag] ?? 0) + delta)));
   }
   return { ...profile, interests, ratings: { ...profile.ratings, [key]: rating } };
+}
+
+/** The interests the planner uses: each tag's weight averaged over the owner and everyone in their group. */
+export function groupInterests(profile: Pick<Profile, "interests" | "group">): Partial<Record<Tag, number>> {
+  const members = profile.group ?? [];
+  if (members.length === 0) return profile.interests;
+  const interests: Partial<Record<Tag, number>> = {};
+  for (const tag of TAGS) {
+    const sum = (profile.interests[tag] ?? 0) + members.filter((m) => m.interests.includes(tag)).length;
+    if (sum > 0) interests[tag] = round(sum / (members.length + 1));
+  }
+  return interests;
 }
 
 export function walkTimeFactor(profile: Pick<Profile, "pace">): number {

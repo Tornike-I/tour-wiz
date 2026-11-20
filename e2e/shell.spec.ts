@@ -86,6 +86,26 @@ test("step-free mode only plans places without steps", async ({ page }) => {
   await expect(page.getByRole("heading", { name: /Šternberk Palace/ })).toHaveCount(0);
 });
 
+test("plans a day for a group", async ({ page }) => {
+  await page.getByRole("button", { name: "+ Add a person" }).click();
+  await page.getByRole("textbox", { name: "Name of person 2" }).fill("Ana");
+  await page.getByRole("button", { name: "Castles", exact: true }).first().click();
+  await page.getByRole("button", { name: "Plan my day" }).click();
+  await expect(page.getByRole("alert")).toHaveText("Pick at least one interest for Ana, or remove them.");
+
+  await page.getByRole("group", { name: "Ana's interests" }).getByRole("button", { name: "Tea houses" }).click();
+  await page.getByRole("button", { name: "Plan my day" }).click();
+  await expect(page.getByText("Planned for you and Ana.")).toBeVisible();
+  await expect(page.getByText(/Matches: .*\(.*Ana.*\)/).first()).toBeVisible();
+  await expectPhoneFriendly(page);
+
+  await page.getByRole("button", { name: "Change my interests" }).click();
+  await expect(page.getByRole("textbox", { name: "Name of person 2" })).toHaveValue("Ana");
+  await page.getByRole("button", { name: "Remove Ana" }).click();
+  await page.getByRole("button", { name: "Save and re-plan" }).click();
+  await expect(page.getByText("Planned for you and Ana.")).toHaveCount(0);
+});
+
 test("clearing the date or a time keeps the plan", async ({ page }) => {
   await onboard(page);
   const summary = page.getByText(/\d+ stops · [\d.]+ km walking/);

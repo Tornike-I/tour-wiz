@@ -1,7 +1,7 @@
 import OpeningHours from "opening_hours";
 import type { City, Level, Place, RestPoint } from "../catalogue";
 import type { Tag } from "../catalogue/tags";
-import { walkTimeFactor, ratingKey, type Profile } from "../profile";
+import { groupInterests, walkTimeFactor, ratingKey, type Profile } from "../profile";
 
 /** Weights of the value formula. Tuned by hand against Prague; see TECH.md. */
 export const WEIGHTS = {
@@ -101,13 +101,14 @@ export function plan(city: City, profile: Profile, request: PlanRequest): DayPla
     return worst;
   };
 
+  const interests = groupInterests(profile);
   const candidates = city.places.filter(
     (p) =>
       profile.ratings[ratingKey(city.id, p.id)] !== 1 &&
       !(profile.stepFree && p.stepFree === "no") &&
-      tasteOf(p, profile, new Map()) > 0,
+      tasteOf(p, interests, new Map()) > 0,
   );
-  const maxTaste = Math.max(...candidates.map((p) => tasteOf(p, profile, new Map())), 1);
+  const maxTaste = Math.max(...candidates.map((p) => tasteOf(p, interests, new Map())), 1);
 
   const stops: Stop[] = [];
   const seenTags = new Map<Tag, number>();
@@ -139,7 +140,7 @@ export function plan(city: City, profile: Profile, request: PlanRequest): DayPla
       const walkMinutes = Math.ceil(walkSeconds / 60);
       const legMetres = (walkSeconds / paceFactor) * WALK_METRES_PER_SECOND;
       if (walkedMetres + legMetres > capMetres) continue;
-      const taste = tasteOf(place, profile, seenTags) / maxTaste;
+      const taste = tasteOf(place, interests, seenTags) / maxTaste;
       const firstSlot = roundUp(now + walkMinutes + (rest ? REST_MINUTES : 0));
       const closedOnArrival = !hours.get(place.id)!.getState(at(firstSlot));
       const waits = [...WAIT_OPTIONS];
@@ -194,11 +195,27 @@ export function plan(city: City, profile: Profile, request: PlanRequest): DayPla
   };
 }
 
-function tasteOf(place: Place, profile: Profile, seenTags: Map<Tag, number>): number {
+function tasteOf(place: Place, interests: Profile["interests"], seenTags: Map<Tag, number>): number {
   return place.tags.reduce(
-    (sum, tag) => sum + (profile.interests[tag] ?? 0) * WEIGHTS.repeat ** (seenTags.get(tag) ?? 0),
+    (sum, tag) => sum + (interests[tag] ?? 0) * WEIGHTS.repeat ** (seenTags.get(tag) ?? 0),
     0,
   );
+}
+
+/** "history, art" alone, or "history (you, Ana), art (Ben)" when travelling as a group. */
+function matchesFor(place: Place, profile: Profile): string {
+  const group = profile.group ?? [];
+  return place.tags
+    .map((tag) => {
+      const who = [
+        ...((profile.interests[tag] ?? 0) > 0 ? ["you"] : []),
+        ...group.filter((m) => m.interests.includes(tag)).map((m) => m.name),
+      ];
+      if (who.length === 0) return undefined;
+      return group.length ? `${tag} (${who.join(", ")})` : tag;
+    })
+    .filter(Boolean)
+    .join(", ");
 }
 
 function reasonsFor(
@@ -209,8 +226,7 @@ function reasonsFor(
   wait: number,
   closedOnArrival: boolean,
 ): string[] {
-  const matches = place.tags.filter((t) => (profile.interests[t] ?? 0) > 0);
-  const reasons = [`Matches: ${matches.join(", ")}`];
+  const reasons = [`Matches: ${matchesFor(place, profile)}`];
   const label = ["empty", "quiet", "moderate", "busy", "packed"][crowd];
   reasons.push(`${crowd <= 1 ? "Quiet" : "Crowd"} at ${toClock(arrive)} (${label}, level ${crowd} of 4)`);
   if (wait > 0) reasons.push(closedOnArrival ? `Waits ${wait} min for it to open` : `Waits ${wait} min for a quieter slot`);

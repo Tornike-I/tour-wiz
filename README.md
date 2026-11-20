@@ -78,7 +78,7 @@ Everything else is an add-on, built only after these five work.
 
 ### Potential add-ons, in build order
 
-1. Group and family profiles
+1. Group and family profiles (built: everyone set up on one phone)
 2. Money and scam guard (local currency, official rate, known scams)
 3. More cities
 4. Full accessibility routing (kerbs, slopes, cobbles, accessible toilets)
