@@ -71,7 +71,7 @@ describe("route", () => {
     await route(repeated, "secret", fetchFn);
     expect(fetchFn).toHaveBeenCalledTimes(1);
     const [url, init] = fetchFn.mock.calls[0] as unknown as [string, RequestInit];
-    expect(url).toMatch(/^https:\/\/api\.heigit\.org\//);
+    expect(url).toMatch(/^https:\/\/api\.heigit\.org\/openrouteservice\/v2\/directions\//);
     expect((init.headers as Record<string, string>).Authorization).toBe("secret");
   });
 
