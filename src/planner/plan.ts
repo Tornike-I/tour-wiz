@@ -1,5 +1,6 @@
 import OpeningHours from "opening_hours";
 import type { City, Level, Place, RestPoint } from "../catalogue";
+import { metres } from "../catalogue/area";
 import type { Tag } from "../catalogue/tags";
 import { walkTimeFactor, ratingKey, type Profile } from "../profile";
 
@@ -231,10 +232,3 @@ function roundUp(minutes: number): number {
   return Math.ceil(minutes / SLOT_MINUTES) * SLOT_MINUTES;
 }
 
-function metres(a: [number, number], b: [number, number]): number {
-  const rad = Math.PI / 180;
-  const h =
-    Math.sin(((b[0] - a[0]) * rad) / 2) ** 2 +
-    Math.cos(a[0] * rad) * Math.cos(b[0] * rad) * Math.sin(((b[1] - a[1]) * rad) / 2) ** 2;
-  return 2 * 6_371_000 * Math.asin(Math.sqrt(h));
-}
