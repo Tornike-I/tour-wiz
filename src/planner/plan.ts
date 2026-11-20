@@ -50,6 +50,10 @@ export function plan(city: City, profile: Profile, request: PlanRequest): DayPla
   const at = (minutes: number) => new Date(year, month - 1, day, 0, minutes);
   const dayType = [0, 6].includes(at(0).getDay()) ? "weekend" : "weekday";
   const endMinutes = toMinutes(request.end);
+  // A cleared date or time field would otherwise make the search loop forever on NaN.
+  if (Number.isNaN(at(0).getTime()) || !Number.isFinite(toMinutes(request.start)) || !Number.isFinite(endMinutes)) {
+    return { stops: [], walkedKm: 0, quietShare: 0 };
+  }
 
   const matrix = profile.stepFree ? city.walkStepFree : city.walk;
   const index = new Map(matrix.ids.map((id, i) => [id, i]));

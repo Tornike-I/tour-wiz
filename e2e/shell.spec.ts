@@ -86,6 +86,15 @@ test("step-free mode only plans places without steps", async ({ page }) => {
   await expect(page.getByRole("heading", { name: /Šternberk Palace/ })).toHaveCount(0);
 });
 
+test("clearing the date or a time keeps the plan", async ({ page }) => {
+  await onboard(page);
+  const summary = page.getByText(/\d+ stops · [\d.]+ km walking/);
+  const before = await summary.innerText();
+  for (const label of ["Date", "From", "Until"]) await page.getByLabel(label).fill("");
+  await expect(summary).toHaveText(before);
+  await expectPhoneFriendly(page);
+});
+
 test("changes interests and deletes the data", async ({ page }) => {
   await onboard(page);
   await page.getByRole("button", { name: "Change my interests" }).click();
