@@ -101,7 +101,7 @@
         "weekend": [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4, 4, 3, 3, 2, 2, 1, 1, 1, 0, 0, 0]
       },
       "crowdSource": "PLACEHOLDER: generic sightseeing curve, not measured",
-      "stepFree": "no"
+      "stepFree": "limited"
     },
     {
       "id": "old-new-synagogue",
@@ -157,7 +157,7 @@
         "weekend": [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4, 4, 3, 3, 2, 2, 1, 1, 1, 0, 0, 0]
       },
       "crowdSource": "PLACEHOLDER: generic sightseeing curve, not measured",
-      "stepFree": "no"
+      "stepFree": "limited"
     },
     {
       "id": "petrin-tower",
@@ -213,7 +213,7 @@
         "weekend": [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4, 4, 3, 3, 2, 2, 1, 1, 1, 0, 0, 0]
       },
       "crowdSource": "PLACEHOLDER: generic sightseeing curve, not measured",
-      "stepFree": "no"
+      "stepFree": "limited"
     },
     {
       "id": "vysehrad-casemates",
@@ -304,7 +304,7 @@
         "weekend": [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4, 4, 3, 3, 2, 2, 1, 1, 1, 0, 0, 0]
       },
       "crowdSource": "PLACEHOLDER: generic sightseeing curve, not measured",
-      "stepFree": "no"
+      "stepFree": "limited"
     },
     {
       "id": "wallenstein-garden",
@@ -322,7 +322,7 @@
         "weekend": [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4, 4, 3, 3, 2, 2, 1, 1, 1, 0, 0, 0]
       },
       "crowdSource": "PLACEHOLDER: generic sightseeing curve, not measured",
-      "stepFree": "no"
+      "stepFree": "limited"
     },
     {
       "id": "vrtba-garden",
@@ -360,7 +360,7 @@
         "weekend": [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4, 4, 3, 3, 2, 2, 1, 1, 1, 0, 0, 0]
       },
       "crowdSource": "PLACEHOLDER: generic sightseeing curve, not measured",
-      "stepFree": "no"
+      "stepFree": "limited"
     },
     {
       "id": "riegrovy-sady",
@@ -652,7 +652,7 @@
         "weekend": [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4, 4, 3, 3, 2, 2, 1, 1, 1, 0, 0, 0]
       },
       "crowdSource": "PLACEHOLDER: generic sightseeing curve, not measured",
-      "stepFree": "no"
+      "stepFree": "yes"
     },
     {
       "id": "sternberg-palace",
@@ -689,7 +689,7 @@
         "weekend": [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4, 4, 3, 3, 2, 2, 1, 1, 1, 0, 0, 0]
       },
       "crowdSource": "PLACEHOLDER: generic sightseeing curve, not measured",
-      "stepFree": "no"
+      "stepFree": "yes"
     }
   ],
   "restPoints": [
