@@ -2,9 +2,11 @@ import { describe, expect, it } from "vitest";
 import {
   PLACEHOLDER_SOURCE,
   checkMatrix,
+  fillStepFree,
   mergePlace,
   parseCrowdCsv,
   pickRestPoints,
+  stepFreeIndices,
   type OsmElement,
   type SeedPlace,
 } from "./catalogue-lib";
@@ -74,6 +76,15 @@ describe("checkMatrix", () => {
   it("rounds seconds and rejects unreachable pairs", () => {
     expect(checkMatrix(["a", "b"], [[0, 10.6], [9.4, 0]], "walk")).toEqual([[0, 11], [9, 0]]);
     expect(() => checkMatrix(["a", "b"], [[0, null], [9, 0]], "wheelchair")).toThrow(/a → b/);
+  });
+});
+
+describe("step-free matrix", () => {
+  it("routes only places a step-free plan may visit and keeps walking times elsewhere", () => {
+    const indices = stepFreeIndices([{ stepFree: "yes" }, { stepFree: "no" }, { stepFree: "limited" }]);
+    expect(indices).toEqual([0, 2]);
+    const walk = [[0, 1, 2], [3, 0, 4], [5, 6, 0]];
+    expect(fillStepFree(walk, indices, [[0, 20], [50, 0]])).toEqual([[0, 1, 20], [3, 0, 4], [50, 6, 0]]);
   });
 });
 

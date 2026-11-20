@@ -205,3 +205,15 @@ function round(value: number, digits: number): number {
   const f = 10 ** digits;
   return Math.round(value * f) / f;
 }
+
+/** Places a step-free plan may visit; only their rows and columns of the wheelchair matrix are ever read. */
+export function stepFreeIndices(places: Pick<Place, "stepFree">[]): number[] {
+  return places.flatMap((p, i) => (p.stepFree === "no" ? [] : [i]));
+}
+
+// Rows and columns outside `indices` keep the walking times: the planner never reads them in step-free mode.
+export function fillStepFree(walk: number[][], indices: number[], sub: number[][]): number[][] {
+  const full = walk.map((row) => [...row]);
+  indices.forEach((i, a) => indices.forEach((j, b) => (full[i]![j] = sub[a]![b]!)));
+  return full;
+}
