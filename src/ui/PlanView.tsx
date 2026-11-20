@@ -58,15 +58,15 @@ export function PlanView({ city, profile, today, onRate, onEdit, onDelete }: Pro
         <div className="grid grid-cols-2 gap-2">
           <label className="col-span-2 space-y-1 text-sm font-medium">
             <span>Date</span>
-            <input type="date" className={inputClass} value={date} onChange={(e) => setDate(e.target.value)} />
+            <input type="date" className={inputClass} value={date} onChange={(e) => e.target.value && setDate(e.target.value)} />
           </label>
           <label className="space-y-1 text-sm font-medium">
             <span>From</span>
-            <input type="time" className={inputClass} value={start} onChange={(e) => setStart(e.target.value)} />
+            <input type="time" className={inputClass} value={start} onChange={(e) => e.target.value && setStart(e.target.value)} />
           </label>
           <label className="space-y-1 text-sm font-medium">
             <span>Until</span>
-            <input type="time" className={inputClass} value={end} onChange={(e) => setEnd(e.target.value)} />
+            <input type="time" className={inputClass} value={end} onChange={(e) => e.target.value && setEnd(e.target.value)} />
           </label>
         </div>
         {planProfile.stepFree && (

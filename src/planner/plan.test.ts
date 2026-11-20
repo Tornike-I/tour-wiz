@@ -51,6 +51,13 @@ const profile = (answers: Partial<OnboardingAnswers> = {}) =>
 const day = { date: "2026-11-18", start: "09:00", end: "18:00" };
 
 describe("plan", () => {
+  it("returns an empty plan for a missing date or time instead of hanging", () => {
+    const c = city([place("a")]);
+    for (const bad of [{ date: "" }, { start: "" }, { end: "" }, { date: "not-a-date" }]) {
+      expect(plan(c, profile(), { ...day, ...bad }).stops).toEqual([]);
+    }
+  });
+
   it("never plans a place while it is closed", () => {
     const c = city([place("closed-today", { openingHours: "Th 09:00-18:00" }), place("open")]);
     const ids = plan(c, profile(), day).stops.map((s) => s.placeId);
