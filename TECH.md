@@ -8,7 +8,7 @@ These were fixed on 8 Nov and are not up for debate:
 
 - Mobile-first web app that runs in any phone browser.
 - OpenStreetMap map; OpenRouteService walking and wheelchair routes.
-- One catalogue file per city. Demo: Prague, 30–50 places, English.
+- One catalogue file per city. Demo: Prague, 30–50 places, English. Berlin is a rough preview of "More cities": 22 places, placeholder crowd curves and straight-line walking times. A switch above the plan picks the city.
 - No accounts. The profile and access needs stay on the phone.
 - Location is used only while planning or walking.
 - The planner uses clear rules, not an AI model.
@@ -68,6 +68,7 @@ data/
   places/prague.json   hand-picked places: OSM id, tags, visit time, overrides with a note
   crowd/prague.csv     hand-entered hourly crowd levels, with sources
   cities/prague.json   generated catalogue the app loads
+  places/berlin.json, cities/berlin.json   rough Berlin preview, built with --estimate-walk
 docs/                hackathon brief, pitch, interview sheet
 ```
 
@@ -193,7 +194,7 @@ Onboarding asks three access questions: the step-free switch, "Rest breaks" (no 
 
 Code: `api/route.ts`, a Vercel function. `npm run dev` serves the same handler through a Vite plugin, with `ORS_API_KEY` from `.env`.
 
-- Refuses points outside Prague's bounding box (49.9–50.2 N, 14.2–14.75 E), so the key can't be used for anything else. Widen it when a city is added.
+- Refuses a leg unless both points lie in the same city's box (`CITY_BOUNDS`: Prague and Berlin), so the key can't be used for anything else. Add a box when a city is added.
 - Rounds points to 5 decimals and `scenic` to quarter steps.
 - Picks the profile (`foot-walking` or `wheelchair`), adds weightings for scenic walking legs, and calls ORS with the key from `ORS_API_KEY`.
 - Returns `{ path: [lat, lon][], distanceMetres, durationSeconds }`; 400 for bad input, 503 without a key, 502 when ORS fails.

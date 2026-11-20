@@ -148,3 +148,16 @@ test("adds rest breaks and keeps to the walking limit", async ({ page }) => {
   await expect(page.getByRole("button", { name: "After 10 min walking" })).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByRole("button", { name: "4 km", exact: true })).toHaveAttribute("aria-pressed", "true");
 });
+
+test("switches the plan to Berlin with the same profile", async ({ page }) => {
+  await onboard(page, ["History", "Viewpoints"]);
+  await page.getByRole("group", { name: "City" }).getByRole("button", { name: "Berlin" }).click();
+
+  await expect(page.getByRole("heading", { name: "Your day in Berlin" })).toBeVisible();
+  await expect(page.getByRole("listitem").filter({ hasText: "Matches: history" }).first()).toBeVisible();
+  await expect.poll(() => routeCalls.some((c) => (c as { to: number[] }).to[0]! > 52)).toBe(true);
+  await expectPhoneFriendly(page);
+
+  await page.getByRole("button", { name: "Prague" }).click();
+  await expect(page.getByRole("heading", { name: "Your day in Prague" })).toBeVisible();
+});

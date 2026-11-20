@@ -25,10 +25,17 @@ describe("parseRouteRequest", () => {
   });
 
   it("refuses points outside the city and malformed bodies", () => {
-    expect(parseRouteRequest({ ...leg, to: [48.85, 2.35] })).toMatch(/inside the city/);
+    expect(parseRouteRequest({ ...leg, to: [48.85, 2.35] })).toMatch(/inside the same city/);
+    expect(parseRouteRequest({ ...leg, to: [52.5163, 13.3777] })).toMatch(/inside the same city/);
     expect(parseRouteRequest({ ...leg, scenic: 2 })).toMatch(/scenic/);
     expect(parseRouteRequest({ ...leg, stepFree: "yes" })).toMatch(/stepFree/);
     expect(parseRouteRequest(null)).toMatch(/from and to/);
+  });
+
+  it("accepts a leg inside Berlin", () => {
+    expect(parseRouteRequest({ ...leg, from: [52.5163, 13.3777], to: [52.5186, 13.4081] })).toMatchObject({
+      from: [52.5163, 13.3777],
+    });
   });
 });
 
