@@ -8,7 +8,7 @@ These were fixed on 8 Nov and are not up for debate:
 
 - Mobile-first web app that runs in any phone browser.
 - OpenStreetMap map; OpenRouteService walking and wheelchair routes.
-- One catalogue file per city. Demo: Prague, 30–50 places, English.
+- One catalogue file per city. Demo: Prague, 30–50 places, English. Berlin is a rough preview of "More cities": 22 places, placeholder crowd curves and straight-line walking times. A switch above the plan picks the city.
 - No accounts. The profile and access needs stay on the phone.
 - Location is used only while planning or walking.
 - The planner uses clear rules, not an AI model.
@@ -68,6 +68,7 @@ data/
   places/prague.json   hand-picked places: OSM id, tags, visit time, overrides with a note
   crowd/prague.csv     hand-entered hourly crowd levels, with sources
   cities/prague.json   generated catalogue the app loads
+  places/berlin.json, cities/berlin.json   rough Berlin preview, built with --estimate-walk
 docs/                hackathon brief, pitch, interview sheet
 ```
 
@@ -156,7 +157,7 @@ Pure function in `src/planner`: `plan(city, profile, { date, start, end, from? }
 4. **Rest stops.** When a leg's walking time is longer than `restEveryMinutes`, a 10-minute rest goes on that leg. The rest point is picked by `detour + distance to where the limit runs out` (the point `restEveryMinutes / leg minutes` along the straight line, at most 80%). The rest and its detour count in the arrival time and the walking cap. Step-free travellers rest only at benches, because OSM rarely says whether a café or toilet has steps.
 5. **Explain.** Every stop carries its reasons: "Matches: tea-house, art", "Quiet at 09:30 (quiet, level 1 of 4)", "Waits 45 min for it to open", "Waits 30 min for a quieter slot", "Step-free access is limited".
 
-Walking times are matrix seconds × the pace factor. The walking cap uses distance ≈ matrix seconds × 1.3 m/s, because the catalogue stores times, not distances. The first leg, from `from` or the city centre, is a straight-line estimate.
+Walking times are matrix seconds × the pace factor. The walking cap uses distance ≈ matrix seconds × 1.3 m/s, because the catalogue stores times, not distances. The first leg, from `from` or the city centre, is a straight-line estimate. The plan screen's "Start from my location" reads the position once and uses it as `from` only when `isInCity` (`src/catalogue/area.ts`) accepts it; otherwise the day starts at the city centre.
 
 The weights live in `WEIGHTS` in `src/planner/plan.ts` and are tuned by hand against Prague. Greedy is enough for 30–50 places.
 
@@ -196,7 +197,7 @@ Onboarding asks three access questions: the step-free switch, "Rest breaks" (no 
 
 Code: `api/route.ts`, a Vercel function. `npm run dev` serves the same handler through a Vite plugin, with `ORS_API_KEY` from `.env`.
 
-- Refuses points outside Prague's bounding box (49.9–50.2 N, 14.2–14.75 E), so the key can't be used for anything else. Widen it when a city is added.
+- Refuses a leg unless both points lie in the same city's box (`CITY_BOUNDS`: Prague and Berlin), so the key can't be used for anything else. Add a box when a city is added.
 - Rounds points to 5 decimals and `scenic` to quarter steps.
 - Picks the profile (`foot-walking` or `wheelchair`), adds weightings for scenic walking legs, and calls ORS with the key from `ORS_API_KEY`.
 - Returns `{ path: [lat, lon][], distanceMetres, durationSeconds }`; 400 for bad input, 503 without a key, 502 when ORS fails.
@@ -208,7 +209,7 @@ Code: `api/route.ts`, a Vercel function. `npm run dev` serves the same handler t
 | Data | Where it lives |
 |---|---|
 | Interests, ratings, access needs, group members' names and interests | `localStorage` on the phone only |
-| Current location | Read only while planning or walking; never stored or logged |
+| Current location | Read once when the traveller taps "Start from my location"; kept in memory for that plan, never stored or logged. The first leg's start goes to `/api/route` like any other leg |
 | Route requests | Start and end of one leg go to the proxy and ORS, nothing else |
 
 Access needs count as health-related data under GDPR, which is why they never leave the device.

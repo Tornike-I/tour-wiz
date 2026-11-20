@@ -1,0 +1,31 @@
+{
+  "id": "berlin",
+  "name": "Berlin",
+  "countryCode": "de",
+  "timezone": "Europe/Berlin",
+  "center": [52.5163, 13.3777],
+  "places": [
+    { "id": "brandenburg-gate", "osmId": "way/518071791", "name": "Brandenburg Gate", "tags": ["history", "architecture"], "visitMinutes": 20 },
+    { "id": "reichstag", "osmId": "relation/2201742", "name": "Reichstag Building", "tags": ["history", "architecture", "viewpoint"], "visitMinutes": 60, "url": "https://www.bundestag.de/en/visittheBundestag" },
+    { "id": "holocaust-memorial", "osmId": "way/172234733", "name": "Memorial to the Murdered Jews of Europe", "tags": ["history"], "visitMinutes": 30, "url": "https://www.stiftung-denkmal.de" },
+    { "id": "berlin-cathedral", "osmId": "way/313670734", "name": "Berlin Cathedral", "tags": ["church", "architecture", "viewpoint"], "visitMinutes": 60, "url": "https://www.berlinerdom.de/" },
+    { "id": "altes-museum", "osmId": "relation/3619", "name": "Altes Museum", "tags": ["museum", "art", "history"], "visitMinutes": 90, "url": "https://www.smb.museum/museen-einrichtungen/altes-museum/home/" },
+    { "id": "neues-museum", "osmId": "way/18578139", "name": "Neues Museum", "tags": ["museum", "history", "art"], "visitMinutes": 120, "url": "https://www.smb.museum/museen-einrichtungen/neues-museum/" },
+    { "id": "alte-nationalgalerie", "osmId": "way/313670733", "name": "Alte Nationalgalerie", "tags": ["museum", "art"], "visitMinutes": 90, "url": "https://www.smb.museum/en/museums-institutions/alte-nationalgalerie/home/" },
+    { "id": "humboldt-forum", "osmId": "node/8413352835", "name": "Humboldt Forum", "tags": ["museum", "architecture", "viewpoint", "kids"], "visitMinutes": 90, "url": "https://www.humboldtforum.org" },
+    { "id": "german-historical-museum", "osmId": "node/3203167561", "name": "German Historical Museum", "tags": ["museum", "history"], "visitMinutes": 120, "url": "https://www.dhm.de/" },
+    { "id": "tv-tower", "osmId": "way/556435241", "name": "Berlin TV Tower", "tags": ["viewpoint", "architecture", "kids"], "visitMinutes": 60, "openingHours": "Mo-Su 10:00-22:00", "openingHoursNote": "not in OSM; approximate, verify on tv-turm.de", "url": "https://www.tv-turm.de/" },
+    { "id": "gendarmenmarkt", "osmId": "way/844740667", "name": "Gendarmenmarkt", "tags": ["architecture", "history"], "visitMinutes": 20, "openingHours": "24/7", "openingHoursNote": "open public square" },
+    { "id": "konzerthaus", "osmId": "way/217512230", "name": "Konzerthaus Berlin", "tags": ["music", "architecture"], "visitMinutes": 120, "openingHours": "Mo-Su 19:00-22:00", "openingHoursNote": "not in OSM; typical evening concert time, check konzerthaus.de", "url": "https://www.konzerthaus.de/" },
+    { "id": "checkpoint-charlie", "osmId": "node/417346627", "name": "Checkpoint Charlie", "tags": ["history"], "visitMinutes": 20, "openingHours": "24/7", "openingHoursNote": "open street corner", "url": "https://www.berlin.de/en/attractions-and-sights/3560059-3104052-checkpoint-charlie.en.html" },
+    { "id": "topography-of-terror", "osmId": "way/24368681", "name": "Topography of Terror", "tags": ["museum", "history"], "visitMinutes": 75, "url": "https://www.topographie.de/" },
+    { "id": "markthalle-neun", "osmId": "relation/9503840", "name": "Markthalle Neun", "tags": ["food-market", "shopping"], "visitMinutes": 60, "openingHours": "Mo-Sa 12:00-18:00", "openingHoursNote": "not in OSM; approximate, verify on markthalleneun.de", "url": "https://markthalleneun.de/" },
+    { "id": "hackesche-hoefe", "osmId": "way/337201828", "name": "Hackesche Höfe", "tags": ["shopping", "architecture", "nightlife"], "visitMinutes": 45, "openingHours": "24/7", "openingHoursNote": "public courtyards; shop hours vary, not in OSM" },
+    { "id": "natural-history-museum", "osmId": "node/538692583", "name": "Museum für Naturkunde", "tags": ["museum", "kids"], "visitMinutes": 120, "url": "https://www.museumfuernaturkunde.berlin/" },
+    { "id": "monbijou-park", "osmId": "way/340138573", "name": "Monbijou Park", "tags": ["park", "river"], "visitMinutes": 30, "openingHours": "24/7", "openingHoursNote": "open public park" },
+    { "id": "tiergarten", "osmId": "relation/7643526", "name": "Tiergarten", "tags": ["park"], "visitMinutes": 60 },
+    { "id": "cafe-am-neuen-see", "osmId": "way/118616321", "name": "Café am Neuen See", "tags": ["beer", "cafe", "park"], "visitMinutes": 60, "openingHours": "Mo-Su 12:00-18:00", "openingHoursNote": "OSM value with the open end (18:00+) cut to 18:00", "url": "https://www.cafeamneuensee.de/biergarten" },
+    { "id": "cafe-einstein-unter-den-linden", "osmId": "node/1412218896", "name": "Café Einstein Unter den Linden", "tags": ["cafe"], "visitMinutes": 45 },
+    { "id": "claerchens-ballhaus", "osmId": "node/429735547", "name": "Clärchens Ballhaus", "tags": ["nightlife", "music"], "visitMinutes": 90, "url": "https://www.claerchensball.haus/" }
+  ]
+}

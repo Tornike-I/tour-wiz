@@ -4,8 +4,11 @@ import type { LatLon, RouteRequest, RouteResponse } from "../src/map/routeTypes"
 
 export type { LatLon, RouteRequest, RouteResponse };
 
-// Prague and its surroundings. Requests outside are refused, so the key cannot be used for anything else.
-const BOUNDS = { south: 49.9, north: 50.2, west: 14.2, east: 14.75 };
+// One box per catalogue city; a leg must lie inside one of them, so the key cannot be used for anything else.
+const CITY_BOUNDS = [
+  { south: 49.9, north: 50.2, west: 14.2, east: 14.75 }, // Prague
+  { south: 52.4, north: 52.65, west: 13.15, east: 13.65 }, // Berlin
+];
 const ORS_DIRECTIONS = "https://api.heigit.org/openrouteservice/v2/directions";
 const cache = new Map<string, RouteResponse>();
 const CACHE_LIMIT = 500;
@@ -15,18 +18,16 @@ const toFixed5 = (v: number) => Number(v.toFixed(5));
 export function parseRouteRequest(body: unknown): RouteRequest | string {
   const b = body as Partial<Record<keyof RouteRequest, unknown>> | null;
   const point = (p: unknown): LatLon | undefined =>
-    Array.isArray(p) &&
-    p.length === 2 &&
-    p.every((n) => typeof n === "number" && Number.isFinite(n)) &&
-    p[0] >= BOUNDS.south &&
-    p[0] <= BOUNDS.north &&
-    p[1] >= BOUNDS.west &&
-    p[1] <= BOUNDS.east
+    Array.isArray(p) && p.length === 2 && p.every((n) => typeof n === "number" && Number.isFinite(n))
       ? [toFixed5(p[0]), toFixed5(p[1])]
       : undefined;
   const from = point(b?.from);
   const to = point(b?.to);
-  if (!from || !to) return "from and to must be [lat, lon] inside the city";
+  const inside = (q: LatLon, box: (typeof CITY_BOUNDS)[number]) =>
+    q[0] >= box.south && q[0] <= box.north && q[1] >= box.west && q[1] <= box.east;
+  if (!from || !to || !CITY_BOUNDS.some((box) => inside(from, box) && inside(to, box))) {
+    return "from and to must be [lat, lon] inside the same city";
+  }
   if (typeof b?.scenic !== "number" || b.scenic < 0 || b.scenic > 1) return "scenic must be a number from 0 to 1";
   if (typeof b?.stepFree !== "boolean") return "stepFree must be true or false";
   return { from, to, scenic: Math.round(b.scenic * 4) / 4, stepFree: b.stepFree };

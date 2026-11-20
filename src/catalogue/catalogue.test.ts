@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import prague from "../../data/cities/prague.json";
-import { CatalogueError, parseCity, walkTimes, type City } from ".";
+import { CatalogueError, isInCity, parseCity, walkTimes, type City } from ".";
 
 const valid = (): City => structuredClone(prague) as City;
 
@@ -53,5 +53,24 @@ describe("city catalogue", () => {
     expect(walk("charles-bridge", "charles-bridge")).toBe(0);
     expect(walk("charles-bridge", "prague-castle")).toBeGreaterThan(0);
     expect(() => walk("charles-bridge", "nowhere")).toThrow(CatalogueError);
+  });
+});
+
+describe("isInCity", () => {
+  const city = parseCity(prague);
+
+  it("accepts the old town and the furthest catalogue place", () => {
+    expect(isInCity(city, [50.0875, 14.4213])).toBe(true);
+    const furthest = city.places.reduce((a, b) =>
+      Math.hypot(b.location[0] - city.center[0], b.location[1] - city.center[1]) >
+      Math.hypot(a.location[0] - city.center[0], a.location[1] - city.center[1])
+        ? b
+        : a,
+    );
+    expect(isInCity(city, furthest.location)).toBe(true);
+  });
+
+  it("rejects a point in another city", () => {
+    expect(isInCity(city, [49.1951, 16.6068])).toBe(false); // Brno
   });
 });

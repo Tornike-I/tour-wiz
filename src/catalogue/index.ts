@@ -3,6 +3,7 @@ import { citySchema, type City } from "./schema";
 export { citySchema, placeSchema, restPointSchema } from "./schema";
 export type { City, Place, RestPoint, Level } from "./schema";
 export { TAGS, type Tag } from "./tags";
+export { isInCity, metres } from "./area";
 
 export class CatalogueError extends Error {}
 
